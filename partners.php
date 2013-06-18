@@ -11,6 +11,9 @@
 	// Check db connection
 	$DB->dead_or_alive();
 
+	include_once('lib/template.php');
+	$Template = new Template();
+
 	$db_datas = $DB->get_datas();
 
 	require_once('redbean/rb.php');
@@ -56,17 +59,7 @@
 
 		<div class="container">
 
-			<h1>Do Diesis</h1>
-
-			<div class="btn-toolbar">
-				<div class="btn-group">
-					<a href="index.php" class="btn"><i class="icon-home"></i></a>
-					<a href="partners.php" class="btn"><i class="icon-user"></i></a>
-					<a href="groups.php" class="btn"><i class="icon-th-list"></i></a>
-				</div>
-			</div>
-
-			<hr />
+			<?php echo $Template->get_header_buttons(); ?>
 
 			<form action="partners.php" method="post">
 				<div class="controls controls-row">
@@ -105,8 +98,14 @@
 					} // else
 			?>
 
+		<?php echo $Template->footer(); ?>
+
 		</div><!-- .container -->
 
 	</body>
+	
+	<script type="text/javascript">
+		<?php echo $Template->get_header_buttons_attrs(); ?>
+	</script>
 
 </html>
