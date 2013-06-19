@@ -1,7 +1,11 @@
 <?php
 
-	ini_set('error_reporting', E_ALL);
-	ini_set('display_errors', 1);
+	include_once('lib/config.php');
+
+	if ( __DEV_MODE_ACTIVE__ ) {
+		ini_set('error_reporting', E_ALL);
+		ini_set('display_errors', 1);
+		}
 
 	include_once('lib/db.php');
 
@@ -24,19 +28,21 @@
 	
 	// Insert new record passed to page
 	if ( $_POST ) {
-		$main = R::dispense('group');
+		$main = R::dispense(__GROUP_TABLE__);
 		$main->name = $_POST['name'];
 		R::store($main);
 	} // if
 	
 	// Delete record passed to page
 	if ( $_GET && isset($_GET['unlink']) ) {
-		$main = R::load('group', $_GET['unlink']);
+		$main = R::load(__GROUP_TABLE__, $_GET['unlink']);
 		R::trash( $main );
+		// Set all the record in main table with relation = Null
+		R::exec('UPDATE ' . __MAIN_TABLE__ . ' SET group_id = null WHERE group_id = ? ',array($_GET['unlink']));
 	} // if
 	
 	// Extract all the main record
-	$records = R::findAll('group', ' ORDER BY name ');
+	$records = R::findAll(__GROUP_TABLE__, ' ORDER BY name ');
 
 ?>
 
@@ -47,12 +53,7 @@
 		<meta charset="utf-8">
 			<title>Do Diesis</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<!-- Do-Diesis include -->
-		<script src="js/jquery.js" type="text/javascript"></script>
-		<script src="js/generic.js" type="text/javascript"></script>
-		<!-- Bootstrap include -->
-		<link rel="stylesheet" href="bootstrap/css/bootstrap.css" type="text/css"/>
-		<script src="bootstrap/js/bootstrap.js" type="text/javascript"></script>
+		<?php echo $Template->get_head(); ?>
 	</head>
 
 	<body style="margin-top:10px;">
@@ -71,7 +72,7 @@
 
 				<div class="span10">
 
-					<form action="groups.php" method="post">
+					<form action="<?php echo __GROUP_PAGE__; ?>" method="post">
 						<div class="controls controls-row">
 							<input class="span11" name="name" type="text" placeholder="Name" required>
 							<input class="span1 btn btn-primary" type="submit" value="+">
@@ -87,9 +88,15 @@
 										<td><b>NAME</b></td>
 									</tr>';
 							foreach( $records as $r ) {
+								if ( R::findOne(__MAIN_TABLE__,' group_id = ? ',array($r['id'])) ) {
+									$js_on_button = 'confirm_set_null()';
+									}
+								else {
+									$js_on_button = 'confirm_delete()';
+									}
 								echo '<tr>
 										<td>
-											<a onclick="return confirm_delete()" href="?unlink=' . $r['id'] . '">
+											<a onclick="return ' . $js_on_button . '" href="?unlink=' . $r['id'] . '">
 												<button class="btn btn-danger btn-mini del_line" data-original-title="">X</button>
 											</a>
 										</td>

@@ -1,7 +1,11 @@
 <?php
 
-	ini_set('error_reporting', E_ALL);
-	ini_set('display_errors', 1);
+	include_once('lib/config.php');
+
+	if ( __DEV_MODE_ACTIVE__ ) {
+		ini_set('error_reporting', E_ALL);
+		ini_set('display_errors', 1);
+		}
 
 	include_once('lib/db.php');
 
@@ -24,7 +28,7 @@
 	
 	// Insert new record passed to page
 	if ( $_POST ) {
-		$main = R::dispense('main');
+		$main = R::dispense(__MAIN_TABLE__);
 		$main->description = $_POST['description'];
 		$main->date = date_to_datetime($_POST['date']);
 		$main->in = $_POST['in'];
@@ -33,17 +37,19 @@
 		$main->group_id = $group_match[1];
 		preg_match("#\[(.+?)\]#m",$_POST['partner_id'],$group_match);
 		$main->partner_id = $group_match[1];
+		preg_match("#\[(.+?)\]#m",$_POST['payment_method_id'],$group_match);
+		$main->payment_method_id = $group_match[1];
 		R::store($main);
 	} // if
 	
 	// Delete record passed to page
 	if ( $_GET && isset($_GET['unlink']) ) {
-		$main = R::load('main', $_GET['unlink']);
+		$main = R::load(__MAIN_TABLE__, $_GET['unlink']);
 		R::trash( $main );
 	} // if
 	
 	// Extract all the main record
-	$records = R::findAll('main', ' ORDER BY date ');
+	$records = R::findAll(__MAIN_TABLE__, ' ORDER BY date ');
 
 ?>
 
@@ -54,17 +60,7 @@
 		<meta charset="utf-8">
 			<title>Do Diesis</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<!-- Do-Diesis include -->
-		<script src="js/jquery.js" type="text/javascript"></script>
-		<script src="js/generic.js" type="text/javascript"></script>
-		<!-- Bootstrap include -->
-		<link rel="stylesheet" href="bootstrap/css/bootstrap.css" type="text/css"/>
-		<script src="bootstrap/js/bootstrap.js" type="text/javascript"></script>
-		<!-- Datapicker include -->
-		<link rel="stylesheet" href="datepicker/css/datepicker.css" type="text/css"/>
-		<script src="datepicker/js/bootstrap-datepicker.js" type="text/javascript"></script>
-		<!-- Do-Diesis include -->
-		<link rel="stylesheet" href="css/generic.css" type="text/css"/>
+		<?php echo $Template->get_head(); ?>
 	</head>
 
 	<body style="margin-top:10px;">
@@ -82,7 +78,7 @@
 				</div>
 
 				<div class="span10 main-content">
-					<form action="." method="post">
+					<form action="<?php echo __MAIN_PAGE__; ?> " method="post">
 						<div class="controls controls-row span12">
 							<input class="span6" name="description" type="text" placeholder="Description" required>
 							<input class="span6" id="partner_id" name="partner_id" type="text" placeholder="Partner" required>
@@ -90,8 +86,9 @@
 						<div class="controls controls-row">
 							<input class="span2" id="date" name="date" type="text" placeholder="Date" required readonly value="<?php  echo date("d/m/Y"); ?>">
 							<input class="span3" id="group_id" name="group_id" type="text" placeholder="Group" autocomplete="off" required>
-							<input class="span3" name="in" id="in" type="text" placeholder="In">
-							<input class="span3" name="out" id="out" type="text" placeholder="Out">
+							<input class="span2" id="payment_method_id" name="payment_method_id" type="text" placeholder="Payment Method" autocomplete="off" required>
+							<input class="span2" name="in" id="in" type="text" placeholder="In">
+							<input class="span2" name="out" id="out" type="text" placeholder="Out">
 							<input class="span1 btn btn-primary" type="submit" value="+">
 						</div>
 					</form>
@@ -105,6 +102,7 @@
 										<td><b>DESCRIPTION</b></td>
 										<td><b>DATE</b></td>
 										<td><b>PARTNER</b></td>
+										<td><b>PAYMENT</b></td>
 										<td><b>GROUP</b></td>
 										<td><b>IN</b></td>
 										<td><b>OUT</b></td>
@@ -115,8 +113,9 @@
 							$total_sub = 0.00;
 							foreach( $records as $r ) {
 								// Draw a table row
-								$group = R::load('group', $r['group_id'] );
-								$partner = R::load('partner', $r['partner_id'] );
+								$group = R::load(__GROUP_TABLE__, $r['group_id'] );
+								$partner = R::load(__PARTNER_TABLE__, $r['partner_id'] );
+								$payment_method = R::load(__PAYMENT_METHOD_TABLE__, $r['payment_method_id'] );
 								echo '<tr>
 										<td>
 											<a onclick="return confirm_delete()" href="?unlink=' . $r['id'] . '">
@@ -126,6 +125,7 @@
 										<td>' . $r['description'] . '</td>
 										<td>' . datetime_to_date($r['date']) . '</td>
 										<td>' . $partner->name . '</td>
+										<td>' . $payment_method->name . '</td>
 										<td>' . $group->name . '</td>
 										<td>' . $r['in'] . '</td>
 										<td>' . $r['out'] . '</td>
@@ -138,7 +138,7 @@
 								} // foreach
 							// Draw the last row with the total values
 							echo '<tr>
-								<td colspan="5"></td>
+								<td colspan="6"></td>
 								<td><b>' . $total_in . '</b></td>
 								<td><b>' . $total_out . '</b></td>
 								<td><b>' . $total_sub . '</b></td>
@@ -173,7 +173,7 @@
 
 		$("#group_id").typeahead({
 			source: function(query, process) {
-				$.post("lib/get_group.php", { 'group_name': query }, function(data) {
+				$.post("lib/<?php echo __GET_GROUP_PAGE__; ?>", { 'group_name': query }, function(data) {
 					objects = []; // going to browser
 					map = {}; // storing for later
 					$.each(data, function(i, entity) {
@@ -187,7 +187,21 @@
 
 		$("#partner_id").typeahead({
 			source: function(query, process) {
-				$.post("lib/get_partner.php", { 'partner_name': query }, function(data) {
+				$.post("lib/<?php echo __GET_PARTNER_PAGE__; ?>", { 'partner_name': query }, function(data) {
+					objects = []; // going to browser
+					map = {}; // storing for later
+					$.each(data, function(i, entity) {
+						//map[entity.name] = name;
+						objects.push( '[' + entity.id + '] ' + entity.name);
+					});
+					return process(objects);
+				},"json");
+			},
+		});
+
+		$("#payment_method_id").typeahead({
+			source: function(query, process) {
+				$.post("lib/<?php echo __GET_PAYMENT_METHOD_PAGE__; ?>", { 'pm_name': query }, function(data) {
 					objects = []; // going to browser
 					map = {}; // storing for later
 					$.each(data, function(i, entity) {

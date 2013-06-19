@@ -28,21 +28,21 @@
 	
 	// Insert new record passed to page
 	if ( $_POST ) {
-		$main = R::dispense(__PARTNER_TABLE__);
+		$main = R::dispense(__PAYMENT_METHOD_TABLE__);
 		$main->name = $_POST['name'];
 		R::store($main);
 	} // if
 	
 	// Delete record passed to page
 	if ( $_GET && isset($_GET['unlink']) ) {
-		$main = R::load(__PARTNER_TABLE__, $_GET['unlink']);
+		$main = R::load(__PAYMENT_METHOD_TABLE__, $_GET['unlink']);
 		R::trash( $main );
 		// Set all the record in main table with relation = Null
-		R::exec('UPDATE ' . __MAIN_TABLE__ . ' SET partner_id = null WHERE partner_id = ? ',array($_GET['unlink']));
+		R::exec('UPDATE ' . __MAIN_TABLE__ . ' SET payment_method_id = null WHERE payment_method_id = ? ',array($_GET['unlink']));
 	} // if
 	
 	// Extract all the main record
-	$records = R::findAll(__PARTNER_TABLE__, ' ORDER BY name ');
+	$records = R::findAll(__PAYMENT_METHOD_TABLE__, ' ORDER BY name ');
 
 ?>
 
@@ -53,6 +53,7 @@
 		<meta charset="utf-8">
 			<title>Do Diesis</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<!-- Do-Diesis include -->
 		<?php echo $Template->get_head(); ?>
 	</head>
 
@@ -71,7 +72,8 @@
 				</div>
 
 				<div class="span10">
-					<form action="<?php echo __PARTNER_PAGE__; ?>" method="post">
+
+					<form action="<?php echo __PAYMENT_METHOD_PAGE__; ?>" method="post">
 						<div class="controls controls-row">
 							<input class="span11" name="name" type="text" placeholder="Name" required>
 							<input class="span1 btn btn-primary" type="submit" value="+">
@@ -87,7 +89,7 @@
 										<td><b>NAME</b></td>
 									</tr>';
 							foreach( $records as $r ) {
-								if ( R::findOne(__MAIN_TABLE__,' partner_id = ? ',array($r['id'])) ) {
+								if ( R::findOne(__MAIN_TABLE__,' payment_method_id = ? ',array($r['id'])) ) {
 									$js_on_button = 'confirm_set_null()';
 									}
 								else {
