@@ -63,6 +63,8 @@
 		<!-- Datapicker include -->
 		<link rel="stylesheet" href="datepicker/css/datepicker.css" type="text/css"/>
 		<script src="datepicker/js/bootstrap-datepicker.js" type="text/javascript"></script>
+		<!-- Do-Diesis include -->
+		<link rel="stylesheet" href="css/generic.css" type="text/css"/>
 	</head>
 
 	<body style="margin-top:10px;">
@@ -79,7 +81,7 @@
 					<?php echo $Template->get_sidebar_nav(); ?>
 				</div>
 
-				<div class="span10">
+				<div class="span10 main-content">
 					<form action="." method="post">
 						<div class="controls controls-row span12">
 							<input class="span6" name="description" type="text" placeholder="Description" required>
@@ -93,8 +95,6 @@
 							<input class="span1 btn btn-primary" type="submit" value="+">
 						</div>
 					</form>
-
-					<hr />
 
 					<?php
 						// if there are lines in the database do your work!

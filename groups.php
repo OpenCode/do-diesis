@@ -78,8 +78,6 @@
 						</div>
 					</form>
 
-					<hr />
-
 					<?php
 						// if there are lines in the database do your work!
 						if ( count($records) ) {

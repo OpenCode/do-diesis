@@ -14,10 +14,10 @@
 			<div class="well sidebar-nav">
 				<ul class="nav nav-list">
 					<li class="nav-header">Main</li>
-					<li id="menu_index"><a href="index.php">Main</a></li>
+					<li id="menu_index"><a href="index.php"><i class="icon-list-alt"></i> Main</a></li>
 					<li class="nav-header">Configuration</li>
-					<li id="menu_partners"><a href="partners.php">Partners</a></li>
-					<li id="menu_groups"><a href="groups.php">Groups</a></li>
+					<li id="menu_partners"><a href="partners.php"><i class="icon-user"></i> Partners</a></li>
+					<li id="menu_groups"><a href="groups.php"><i class="icon-th-list"></i> Groups</a></li>
 				</ul>
 			</div>
 			';
