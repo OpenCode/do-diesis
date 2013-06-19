@@ -2,33 +2,39 @@
 
 	class Template {
 
-		public function get_header_buttons() {
+		public function get_header() {
 			return '
 			<h1><img src="img/logo.png" width="38px"> Do Diesis</h1>
-
-			<div class="btn-toolbar">
-				<div class="btn-group">
-					<a id="go_home" href="index.php" class="btn"><i class="icon-home"></i></a>
-					<a id="go_partner" href="partners.php" class="btn"><i class="icon-user"></i></a>
-					<a id="go_group" href="groups.php" class="btn"><i class="icon-th-list"></i></a>
-				</div>
-			</div>
 
 			<hr />';
 			}
 
-		public function get_header_buttons_attrs() {
+		public function get_sidebar_nav() {
 			return '
-			$("#go_home").tooltip({placement: "bottom",trigger: "hover",title : "Homepage"});
-			$("#go_partner").tooltip({placement: "bottom",trigger: "hover",title : "Manage Partner"});
-			$("#go_group").tooltip({placement: "bottom",trigger: "hover",title : "Manage Group"});
+			<div class="well sidebar-nav">
+				<ul class="nav nav-list">
+					<li class="nav-header">Main</li>
+					<li id="menu_index"><a href="index.php">Main</a></li>
+					<li class="nav-header">Configuration</li>
+					<li id="menu_partners"><a href="partners.php">Partners</a></li>
+					<li id="menu_groups"><a href="groups.php">Groups</a></li>
+				</ul>
+			</div>
 			';
 			}
-			
+
 		public function footer() {
 			return '
 			<hr />
 			<p>Developed by <a href="http://www.e-ware.org"><img src="img/e-ware.png" width="32px"/></a></p>
+			';
+			}
+			
+		public function common_script() {
+			return '
+				var id_menu = window.location.href.substr(window.location.href.lastIndexOf("/")+1);
+				id_menu = "#menu_" + id_menu.replace(".php", "");
+				$(id_menu).addClass("active");
 			';
 			}
 

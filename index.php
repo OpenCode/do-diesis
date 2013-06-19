@@ -67,84 +67,98 @@
 
 	<body style="margin-top:10px;">
 
-		<div class="container">
+		<div class="container-fluid">
 
-			<?php echo $Template->get_header_buttons(); ?>
+			<div class="row-fluid">
+				<?php echo $Template->get_header(); ?>
+			</div>
 
-			<form action="." method="post">
-				<div class="controls controls-row">
-					<input class="span6" name="description" type="text" placeholder="Description" required>
-					<input class="span6" id="partner_id" name="partner_id" type="text" placeholder="Partner" required>
+			<div class="row-fluid">
+
+				<div class="span2">
+					<?php echo $Template->get_sidebar_nav(); ?>
 				</div>
-				<div class="controls controls-row">
-					<input class="span2" id="date" name="date" type="text" placeholder="Date" required readonly value="<?php  echo date("d/m/Y"); ?>">
-					<input class="span3" id="group_id" name="group_id" type="text" placeholder="Group" autocomplete="off" required>
-					<input class="span3" name="in" id="in" type="text" placeholder="In">
-					<input class="span3" name="out" id="out" type="text" placeholder="Out">
-					<input class="span1 btn btn-primary" type="submit" value="+">
-				</div>
-			</form>
 
-			<hr />
+				<div class="span10">
+					<form action="." method="post">
+						<div class="controls controls-row span12">
+							<input class="span6" name="description" type="text" placeholder="Description" required>
+							<input class="span6" id="partner_id" name="partner_id" type="text" placeholder="Partner" required>
+						</div>
+						<div class="controls controls-row">
+							<input class="span2" id="date" name="date" type="text" placeholder="Date" required readonly value="<?php  echo date("d/m/Y"); ?>">
+							<input class="span3" id="group_id" name="group_id" type="text" placeholder="Group" autocomplete="off" required>
+							<input class="span3" name="in" id="in" type="text" placeholder="In">
+							<input class="span3" name="out" id="out" type="text" placeholder="Out">
+							<input class="span1 btn btn-primary" type="submit" value="+">
+						</div>
+					</form>
 
-			<?php
-				// if there are lines in the database do your work!
-				if ( count($records) ) {
-					echo '<table class="table table-striped table-bordered table-hover table-condensed">
-							<tr>
-								<td></td>
-								<td><b>DESCRIPTION</b></td>
-								<td><b>DATE</b></td>
-								<td><b>PARTNER</b></td>
-								<td><b>GROUP</b></td>
-								<td><b>IN</b></td>
-								<td><b>OUT</b></td>
-								<td><b>SUBTOTAL</b></td>
+					<hr />
+
+					<?php
+						// if there are lines in the database do your work!
+						if ( count($records) ) {
+							echo '<table class="table table-striped table-bordered table-hover table-condensed">
+									<tr>
+										<td></td>
+										<td><b>DESCRIPTION</b></td>
+										<td><b>DATE</b></td>
+										<td><b>PARTNER</b></td>
+										<td><b>GROUP</b></td>
+										<td><b>IN</b></td>
+										<td><b>OUT</b></td>
+										<td><b>SUBTOTAL</b></td>
+									</tr>';
+							$total_in = 0.00;
+							$total_out = 0.00;
+							$total_sub = 0.00;
+							foreach( $records as $r ) {
+								// Draw a table row
+								$group = R::load('group', $r['group_id'] );
+								$partner = R::load('partner', $r['partner_id'] );
+								echo '<tr>
+										<td>
+											<a onclick="return confirm_delete()" href="?unlink=' . $r['id'] . '">
+												<button class="btn btn-danger btn-mini del_line" data-original-title="">X</button>
+											</a>
+										</td>
+										<td>' . $r['description'] . '</td>
+										<td>' . datetime_to_date($r['date']) . '</td>
+										<td>' . $partner->name . '</td>
+										<td>' . $group->name . '</td>
+										<td>' . $r['in'] . '</td>
+										<td>' . $r['out'] . '</td>
+										<td>' . ($r['in'] - $r['out']) . '</td>
+									</tr>';
+								// Subtotal
+								$total_in += $r['in'];
+								$total_out += $r['out'];
+								$total_sub += ($r['in'] - $r['out']);
+								} // foreach
+							// Draw the last row with the total values
+							echo '<tr>
+								<td colspan="5"></td>
+								<td><b>' . $total_in . '</b></td>
+								<td><b>' . $total_out . '</b></td>
+								<td><b>' . $total_sub . '</b></td>
 							</tr>';
-					$total_in = 0.00;
-					$total_out = 0.00;
-					$total_sub = 0.00;
-					foreach( $records as $r ) {
-						// Draw a table row
-						$group = R::load('group', $r['group_id'] );
-						$partner = R::load('partner', $r['partner_id'] );
-						echo '<tr>
-								<td>
-									<a onclick="return confirm_delete()" href="?unlink=' . $r['id'] . '">
-										<button class="btn btn-danger btn-mini del_line" data-original-title="">X</button>
-									</a>
-								</td>
-								<td>' . $r['description'] . '</td>
-								<td>' . datetime_to_date($r['date']) . '</td>
-								<td>' . $partner->name . '</td>
-								<td>' . $group->name . '</td>
-								<td>' . $r['in'] . '</td>
-								<td>' . $r['out'] . '</td>
-								<td>' . ($r['in'] - $r['out']) . '</td>
-							</tr>';
-						// Subtotal
-						$total_in += $r['in'];
-						$total_out += $r['out'];
-						$total_sub += ($r['in'] - $r['out']);
-						} // foreach
-					// Draw the last row with the total values
-					echo '<tr>
-						<td colspan="5"></td>
-						<td><b>' . $total_in . '</b></td>
-						<td><b>' . $total_out . '</b></td>
-						<td><b>' . $total_sub . '</b></td>
-					</tr>';
-					echo '</table>';
-					} // if
-				// else show a simple message (for now)
-				else {
-					echo '<div class="alert">
-							<strong>OPS!</strong> There isn\'t record in this database. Please create a new line!
-						</div>';
-					} // else
-			?>
+							echo '</table>';
+							} // if
+						// else show a simple message (for now)
+						else {
+							echo '<div class="alert">
+									<strong>OPS!</strong> There isn\'t record in this database. Please create a new line!
+								</div>';
+							} // else
+					?>
 
-		<?php echo $Template->footer(); ?>
+				</div><!-- .span10 -->
+			</div><!-- .row -->
+				
+			<div class="row-fluid">
+				<?php echo $Template->footer(); ?>
+			</div><!-- .row -->
 
 		</div><!-- .container -->
 
@@ -185,7 +199,7 @@
 			},
 		});
 
-		<?php echo $Template->get_header_buttons_attrs(); ?>
+		<?php echo $Template->common_script(); ?>
 
 	</script>
 

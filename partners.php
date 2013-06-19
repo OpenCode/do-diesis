@@ -57,55 +57,69 @@
 
 	<body style="margin-top:10px;">
 
-		<div class="container">
+		<div class="container-fluid">
 
-			<?php echo $Template->get_header_buttons(); ?>
+			<div class="row-fluid">
+				<?php echo $Template->get_header(); ?>
+			</div>
+			
+			<div class="row-fluid">
 
-			<form action="partners.php" method="post">
-				<div class="controls controls-row">
-					<input class="span11" name="name" type="text" placeholder="Name" required>
-					<input class="span1 btn btn-primary" type="submit" value="+">
+				<div class="span2">
+					<?php echo $Template->get_sidebar_nav(); ?>
 				</div>
-			</form>
 
-			<hr />
+				<div class="span10">
+					<form action="partners.php" method="post">
+						<div class="controls controls-row">
+							<input class="span11" name="name" type="text" placeholder="Name" required>
+							<input class="span1 btn btn-primary" type="submit" value="+">
+						</div>
+					</form>
 
-			<?php
-				// if there are lines in the database do your work!
-				if ( count($records) ) {
-					echo '<table class="table table-striped table-bordered table-hover table-condensed">
-							<tr>
-								<td></td>
-								<td><b>NAME</b></td>
-							</tr>';
-					foreach( $records as $r ) {
-						echo '<tr>
-								<td>
-									<a onclick="return confirm_delete()" href="?unlink=' . $r['id'] . '">
-										<button class="btn btn-danger btn-mini del_line" data-original-title="">X</button>
-									</a>
-								</td>
-								<td>' . $r['name'] . '</td>
-							</tr>';
-						} // foreach
-					echo '</table>';
-					} // if
-				// else show a simple message (for now)
-				else {
-					echo '<div class="alert">
-							<strong>OPS!</strong> There isn\'t record in this database. Please create a new line!
-						</div>';
-					} // else
-			?>
+					<hr />
 
-		<?php echo $Template->footer(); ?>
+					<?php
+						// if there are lines in the database do your work!
+						if ( count($records) ) {
+							echo '<table class="table table-striped table-bordered table-hover table-condensed">
+									<tr>
+										<td></td>
+										<td><b>NAME</b></td>
+									</tr>';
+							foreach( $records as $r ) {
+								echo '<tr>
+										<td>
+											<a onclick="return confirm_delete()" href="?unlink=' . $r['id'] . '">
+												<button class="btn btn-danger btn-mini del_line" data-original-title="">X</button>
+											</a>
+										</td>
+										<td>' . $r['name'] . '</td>
+									</tr>';
+								} // foreach
+							echo '</table>';
+							} // if
+						// else show a simple message (for now)
+						else {
+							echo '<div class="alert">
+									<strong>OPS!</strong> There isn\'t record in this database. Please create a new line!
+								</div>';
+							} // else
+					?>
+
+				</div><!-- .span10 -->
+			</div><!-- .row -->
+				
+			<div class="row-fluid">
+				<?php echo $Template->footer(); ?>
+			</div><!-- .row -->
 
 		</div><!-- .container -->
 
 	</body>
 	
 	<script type="text/javascript">
-		<?php echo $Template->get_header_buttons_attrs(); ?>
+		<?php echo $Template->common_script(); ?>
 	</script>
 
 </html>
