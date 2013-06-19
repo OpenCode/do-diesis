@@ -10,6 +10,7 @@
 
 		public function get_head() {
 			return '
+			<link rel="shortcut icon" href="img/logo.png" >
 			<!-- Do-Diesis include -->
 			<script src="js/jquery.js" type="text/javascript"></script>
 			<script src="js/generic.js" type="text/javascript"></script>
