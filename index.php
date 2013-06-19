@@ -88,14 +88,15 @@
 					</div>
 
 					<div class="row-fluid">
-						<div id="movements_chart" class="span6" style="height: 300px;"></div>
-						<div id="in_out_chart" class="span6" style="height: 300px;"></div>
+						<div id="movements_chart" class="chart span6" style="height: 300px;"></div>
+						<div id="in_out_chart" class="chart span6" style="height: 300px;"></div>
 					</div>
 
 					<h5>Main Table</h5>
 					<?php
 						// if there are lines in the database do your work!
-						$movements_chart_values = '{';
+						$movements_chart_values_in = '{';
+						$movements_chart_values_out = '{';
 						if ( count($records) ) {
 							echo '<table class="table table-striped table-bordered table-hover table-condensed">
 									<tr>
@@ -131,7 +132,8 @@
 								$total_out += $r['out'];
 								$total_sub += ($r['in'] - $r['out']);
 								// Chart values
-								$movements_chart_values = $movements_chart_values . '"' . $r['date'] . ' 00:00:00":' . ($r['in'] - $r['out']) . ',';
+								if ( $r['in'] ) $movements_chart_values_in = $movements_chart_values_in . '"' . $r['date'] . '":' . $r['in'] . ',';
+								if ( $r['out'] ) $movements_chart_values_out = $movements_chart_values_out . '"' . $r['date'] . '":-' . $r['out'] . ',';
 								} // foreach
 							// Draw the last row with the total values
 							echo '<tr>
@@ -148,7 +150,8 @@
 									<strong>OPS!</strong> There isn\'t record in this database. Please create a new line <a href="' . __MAIN_PAGE__ . '">HERE</a>!
 								</div>';
 							} // else
-						$movements_chart_values = $movements_chart_values . '}';
+						$movements_chart_values_in = $movements_chart_values_in . '}';
+						$movements_chart_values_out = $movements_chart_values_out . '}';
 						$in_out_chart_values = '[' . $total_in . ',' . $total_out . ']';
 					?>
 
@@ -164,7 +167,11 @@
 	</body>
 
 	<script>
-		new Chartkick.LineChart("movements_chart", <?php echo $movements_chart_values; ?>, {"library": {"backgroundColor": "#fff", "legend": {"position": "top"}}});
+		data = [
+			{ "name":"In", "data":  <?php echo $movements_chart_values_in; ?>},
+			{ "name":"In", "data":  <?php echo $movements_chart_values_out; ?>},
+		]
+		new Chartkick.ColumnChart("movements_chart", data);
 		new Chartkick.PieChart("in_out_chart", {"In": <?php echo $total_in; ?>, "Out": <?php echo $total_out; ?>});
 	</script>
 

@@ -83,12 +83,16 @@
 					<?php
 						// if there are lines in the database do your work!
 						if ( count($records) ) {
+							$total_line = R::count(__MAIN_TABLE__);
 							echo '<table class="table table-striped table-bordered table-hover table-condensed">
 									<tr>
 										<td></td>
 										<td><b>NAME</b></td>
+										<td><b>RELATION</b></td>
+										<td><b>RELATION %</b></td>
 									</tr>';
 							foreach( $records as $r ) {
+								$relation_records = R::count(__MAIN_TABLE__,' payment_method_id = ?',array($r['id']));
 								if ( R::findOne(__MAIN_TABLE__,' payment_method_id = ? ',array($r['id'])) ) {
 									$js_on_button = 'confirm_set_null()';
 									}
@@ -101,8 +105,15 @@
 												<button class="btn btn-danger btn-mini del_line" data-original-title="">X</button>
 											</a>
 										</td>
-										<td>' . $r['name'] . '</td>
-									</tr>';
+										<td>' . $r['name'] . '</td>';
+										if ($total_line) {
+											echo '<td><span class="badge badge-success">' . $relation_records . '</span></td>
+											<td><div class="progress"><div class="bar" style="width: ' . (($relation_records/$total_line)*100) . '%;"></div></div></td>';
+											}
+										else {
+											echo '<td></td><td></td>';
+											}
+									echo '</tr>';
 								} // foreach
 							echo '</table>';
 							} // if
