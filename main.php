@@ -48,8 +48,30 @@
 	// Init ReadBean
 	R::setup($db_datas['type'] . ':host=' . $db_datas['host']  . ';dbname=' . $db_datas['dbname'] ,$db_datas['user'] ,$db_datas['password'] );
 	
+	// Insert new record passed to page
+	if ( $_POST ) {
+		$main = R::dispense(__MAIN_TABLE__);
+		$main->description = $_POST['description'];
+		$main->date = date_to_datetime($_POST['date']);
+		$main->in = $_POST['in'];
+		$main->out = $_POST['out'];
+		preg_match("#\[(.+?)\]#m",$_POST['group_id'],$group_match);
+		$main->group_id = $group_match[1];
+		preg_match("#\[(.+?)\]#m",$_POST['partner_id'],$group_match);
+		$main->partner_id = $group_match[1];
+		preg_match("#\[(.+?)\]#m",$_POST['payment_method_id'],$group_match);
+		$main->payment_method_id = $group_match[1];
+		R::store($main);
+	} // if
+	
+	// Delete record passed to page
+	if ( $_GET && isset($_GET['unlink']) ) {
+		$main = R::load(__MAIN_TABLE__, $_GET['unlink']);
+		R::trash( $main );
+	} // if
+	
 	// Extract all the main record
-	$records = R::findAll(__MAIN_TABLE__, ' ORDER BY date LIMIT 50');
+	$records = R::findAll(__MAIN_TABLE__, ' ORDER BY date ');
 
 ?>
 
@@ -74,10 +96,24 @@
 			<div class="row-fluid">
 
 				<div class="span2">
-					<?php echo $Template->get_sidebar_nav('index'); ?>
+					<?php echo $Template->get_sidebar_nav('main'); ?>
 				</div>
 
 				<div class="span10 main-content">
+					<form action="<?php echo __MAIN_PAGE__; ?> " method="post">
+						<div class="controls controls-row span12">
+							<input class="span6" name="description" type="text" placeholder="Description" required>
+							<input class="span6" id="partner_id" name="partner_id" type="text" placeholder="Partner" required>
+						</div>
+						<div class="controls controls-row">
+							<input class="span2" id="date" name="date" type="text" placeholder="Date" required readonly value="<?php  echo date("d/m/Y"); ?>">
+							<input class="span3" id="group_id" name="group_id" type="text" placeholder="Group" autocomplete="off" required>
+							<input class="span2" id="payment_method_id" name="payment_method_id" type="text" placeholder="Payment Method" autocomplete="off" required>
+							<input class="span2" name="in" id="in" type="text" placeholder="In">
+							<input class="span2" name="out" id="out" type="text" placeholder="Out">
+							<input class="span1 btn btn-primary" type="submit" value="+">
+						</div>
+					</form>
 
 					<?php
 						// if there are lines in the database do your work!
@@ -134,7 +170,7 @@
 						// else show a simple message (for now)
 						else {
 							echo '<div class="alert">
-									<strong>OPS!</strong> There isn\'t record in this database. Please create a new line <a href="' . __MAIN_PAGE__ . '">HERE</a>!
+									<strong>OPS!</strong> There isn\'t record in this database. Please create a new line!
 								</div>';
 							} // else
 					?>

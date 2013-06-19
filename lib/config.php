@@ -12,7 +12,8 @@
 	define('__PAYMENT_METHOD_TABLE__', 'paymentmethod');
 
 	// PAGES
-	define('__MAIN_PAGE__', 'index.php');
+	define('__DASHBOARD_PAGE__', 'index.php');
+	define('__MAIN_PAGE__', 'main.php');
 	define('__PARTNER_PAGE__', 'partners.php');
 	define('__GROUP_PAGE__', 'groups.php');
 	define('__PAYMENT_METHOD_PAGE__', 'payment_methods.php');

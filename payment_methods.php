@@ -68,7 +68,7 @@
 			<div class="row-fluid">
 
 				<div class="span2">
-					<?php echo $Template->get_sidebar_nav(); ?>
+					<?php echo $Template->get_sidebar_nav('payment_methods'); ?>
 				</div>
 
 				<div class="span10">
