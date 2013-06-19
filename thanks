@@ -11,3 +11,7 @@ Bootstrap :
 Datapicker :
 	http://www.eyecon.ro/bootstrap-datepicker/
 	A plugin for bootstrap to select date from an interface with normal input html tag
+
+Chartkick : 
+	https://github.com/ankane/chartkick.js
+	A Javascript script to create charts and graphs

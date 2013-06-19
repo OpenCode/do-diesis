@@ -61,6 +61,9 @@
 			<title>Do Diesis</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<?php echo $Template->get_head(); ?>
+		<!--script src="js/jquery.sparkline.min.js" type="text/javascript"></script-->
+		<script src="js/jsapi.js" type="text/javascript"></script>
+		<script src="js/chartkick.js" type="text/javascript"></script>
 	</head>
 
 	<body style="margin-top:10px;">
@@ -79,12 +82,23 @@
 
 				<div class="span10 main-content">
 
+					<div class="row-fluid">
+						<h5 class="span6">Last Movements Chart</h5>
+						<h5 class="span6">In/Out Relation</h5>
+					</div>
+
+					<div class="row-fluid">
+						<div id="movements_chart" class="span6" style="height: 300px;"></div>
+						<div id="in_out_chart" class="span6" style="height: 300px;"></div>
+					</div>
+
+					<h5>Main Table</h5>
 					<?php
 						// if there are lines in the database do your work!
+						$movements_chart_values = '{';
 						if ( count($records) ) {
 							echo '<table class="table table-striped table-bordered table-hover table-condensed">
 									<tr>
-										<td></td>
 										<td><b>DESCRIPTION</b></td>
 										<td><b>DATE</b></td>
 										<td><b>PARTNER</b></td>
@@ -103,11 +117,6 @@
 								$partner = R::load(__PARTNER_TABLE__, $r['partner_id'] );
 								$payment_method = R::load(__PAYMENT_METHOD_TABLE__, $r['payment_method_id'] );
 								echo '<tr>
-										<td>
-											<a onclick="return confirm_delete()" href="?unlink=' . $r['id'] . '">
-												<button class="btn btn-danger btn-mini del_line" data-original-title="">X</button>
-											</a>
-										</td>
 										<td>' . $r['description'] . '</td>
 										<td>' . datetime_to_date($r['date']) . '</td>
 										<td>' . $partner->name . '</td>
@@ -121,10 +130,12 @@
 								$total_in += $r['in'];
 								$total_out += $r['out'];
 								$total_sub += ($r['in'] - $r['out']);
+								// Chart values
+								$movements_chart_values = $movements_chart_values . '"' . $r['date'] . ' 00:00:00":' . ($r['in'] - $r['out']) . ',';
 								} // foreach
 							// Draw the last row with the total values
 							echo '<tr>
-								<td colspan="6"></td>
+								<td colspan="5"></td>
 								<td><b>' . $total_in . '</b></td>
 								<td><b>' . $total_out . '</b></td>
 								<td><b>' . $total_sub . '</b></td>
@@ -137,6 +148,8 @@
 									<strong>OPS!</strong> There isn\'t record in this database. Please create a new line <a href="' . __MAIN_PAGE__ . '">HERE</a>!
 								</div>';
 							} // else
+						$movements_chart_values = $movements_chart_values . '}';
+						$in_out_chart_values = '[' . $total_in . ',' . $total_out . ']';
 					?>
 
 				</div><!-- .span10 -->
@@ -149,6 +162,11 @@
 		</div><!-- .container -->
 
 	</body>
+
+	<script>
+		new Chartkick.LineChart("movements_chart", <?php echo $movements_chart_values; ?>, {"library": {"backgroundColor": "#fff", "legend": {"position": "top"}}});
+		new Chartkick.PieChart("in_out_chart", {"In": <?php echo $total_in; ?>, "Out": <?php echo $total_out; ?>});
+	</script>
 
 	<script type="text/javascript">
 

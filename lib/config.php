@@ -3,7 +3,7 @@
 	// Config everything to work less later!!!!
 	
 	// GENERIC
-	define('__DEV_MODE_ACTIVE', false);
+	define('__DEV_MODE_ACTIVE', true);
 	
 	// DB
 	define('__MAIN_TABLE__', 'main');
