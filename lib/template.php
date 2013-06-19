@@ -49,11 +49,7 @@
 			}
 			
 		public function common_script() {
-			return '
-				var id_menu = window.location.href.substr(window.location.href.lastIndexOf("/")+1);
-				id_menu = "#menu_" + id_menu.replace(".php", "");
-				$(id_menu).addClass("active");
-			';
+			return '';
 			}
 
 		} // class
