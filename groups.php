@@ -85,10 +85,10 @@
 							$total_line = R::count(__MAIN_TABLE__);
 							echo '<table class="table table-striped table-bordered table-hover table-condensed">
 									<tr>
-										<td></td>
+										<td width="5%"></td>
 										<td><b>NAME</b></td>
-										<td><b>RELATION</b></td>
-										<td><b>RELATION %</b></td>
+										<td width="10%"><b>RELATION</b></td>
+										<td width="10%"><b>RELATION %</b></td>
 									</tr>';
 							foreach( $records as $r ) {
 								$relation_records = R::count(__MAIN_TABLE__,' group_id = ?',array($r['id']));
