@@ -38,13 +38,25 @@
 					<li class="' . ($sm=='payment_methods' ? 'active' : '') . '"><a href="payment_methods.php"><i class="icon-briefcase"></i> P. Methods</a></li>
 				</ul>
 			</div>
+			<script type="text/javascript"><!--
+			google_ad_client = "ca-pub-1267991669483660";
+			/* Do-diesis software */
+			google_ad_slot = "1117523212";
+			google_ad_width = 180;
+			google_ad_height = 150;
+			//-->
+			</script>
+			<script type="text/javascript"
+			src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+			</script>
 			';
 			}
 
 		public function footer() {
+			include_once('config.php');
 			return '
 			<hr />
-			<p>Developed by <a href="http://www.e-ware.org" target="blank"><img src="img/e-ware.png" width="32px"/></a></p>
+			<p>Do-Diesis ' . __VERSION . ' - Developed by <a href="http://www.e-ware.org" target="blank"><img src="img/e-ware.png" width="32px"/></a></p>
 			';
 			}
 			

@@ -3,6 +3,7 @@
 	// Config everything to work less later!!!!
 	
 	// GENERIC
+	define('__VERSION', '1.0.0');
 	define('__DEV_MODE_ACTIVE', true);
 	
 	// DB
