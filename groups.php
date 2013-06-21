@@ -46,8 +46,14 @@
 		R::exec('UPDATE ' . __MAIN_TABLE__ . ' SET group_id = null WHERE group_id = ? ',array($_GET['unlink']));
 	} // if
 
+	// Get the order
+	$order_type = 'name ASC';
+	if ( $_GET && isset($_GET['order']) ) {
+		$order_type = $_GET['order'];
+		}
+
 	// Extract all the main record
-	$records = R::findAll(__GROUP_TABLE__, ' ORDER BY name ');
+	$records = R::findAll(__GROUP_TABLE__, ' ORDER BY ' . $order_type . ' ');
 
 ?>
 
@@ -109,7 +115,7 @@
 							echo '<table class="table table-striped table-bordered table-hover table-condensed">
 									<tr>
 										<td width="10%"></td>
-										<td><b>NAME</b></td>
+										<td><b><i class="icon-chevron-'.get_order_icon($order_type, 'name').'"></i> <a href="?order='.invert_order($order_type, 'name').'">NAME</a></b></td>
 										<td width="10%"><b>RELATION</b></td>
 										<td width="10%"><b>RELATION %</b></td>
 									</tr>';

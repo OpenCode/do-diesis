@@ -3,9 +3,8 @@
 	class Template {
 
 		public function get_header() {
-			return '
-			<h1><img src="img/logo.png" width="38px"> Do Diesis</h1>
-			<hr />';
+			$return = '<h1><img src="img/logo.png" width="38px"> Do Diesis</h1><hr />';
+			return $return;
 			}
 
 		public function get_head() {

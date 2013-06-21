@@ -74,9 +74,9 @@
 
 	// Get the order
 	$order_type = 'date DESC';
-	/*if ( $_GET && isset($_GET['order']) ) {
+	if ( $_GET && isset($_GET['order']) ) {
 		$order_type = $_GET['order'];
-		}*/
+		}
 
 	// Extract all the main record
 	$records = R::findAll(__MAIN_TABLE__, ' ORDER BY ' . $order_type . ' ');
@@ -132,7 +132,7 @@
 							<input class="span6" id="partner_id" name="partner_id" type="text" placeholder="Partner" autocomplete="off" required>
 						</div>
 						<div class="controls controls-row">
-							<input class="span2" id="date" name="date" type="text" placeholder="Date" required readonly value="<?php  echo date("d/m/Y"); ?>" onBlur="$('.datepicker').css('display', 'none');">
+							<input class="span2" id="date" name="date" type="text" placeholder="Date" required readonly value="<?php  echo date("d/m/Y"); ?>">
 							<input class="span3" id="group_id" name="group_id" type="text" placeholder="Group" autocomplete="off" required>
 							<input class="span2" id="payment_method_id" name="payment_method_id" type="text" placeholder="Payment Method" autocomplete="off" required>
 							<input class="span2" name="in" id="in" type="text" placeholder="In">
@@ -148,8 +148,8 @@
 							echo '<table class="table table-striped table-bordered table-hover table-condensed">
 									<tr>
 										<td></td>
-										<td><b>DESCRIPTION</b></td>
-										<td><b>DATE</b></td>
+										<td><b><i class="icon-chevron-'.get_order_icon($order_type, 'description').'"></i> <a href="?order='.invert_order($order_type, 'description').'">DESCRIPTION</a></b></td>
+										<td><b><i class="icon-chevron-'.get_order_icon($order_type, 'date').'"></i> <a href="?order='.invert_order($order_type, 'date').'">DATE</a></b></td>
 										<td><b>PARTNER</b></td>
 										<td><b>GROUP</b></td>
 										<td><b>PAYMENT</b></td>
