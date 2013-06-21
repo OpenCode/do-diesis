@@ -52,8 +52,8 @@
 							<td><b>DESCRIPTION</b></td>
 							<td><b>DATE</b></td>
 							<td><b>PARTNER</b></td>
-							<td><b>PAYMENT</b></td>
 							<td><b>GROUP</b></td>
+							<td><b>PAYMENT</b></td>
 							<td><b>IN</b></td>
 							<td><b>OUT</b></td>
 							<td><b>SUBTOTAL</b></td>
@@ -63,23 +63,20 @@
 				$total_sub = 0.00;
 				foreach( $records as $r ) {
 					// Draw a table row
-					$group = R::load(__GROUP_TABLE__, $r['group_id'] );
-					$partner = R::load(__PARTNER_TABLE__, $r['partner_id'] );
-					$payment_method = R::load(__PAYMENT_METHOD_TABLE__, $r['payment_method_id'] );
 					echo '<tr>
-							<td>' . $r['description'] . '</td>
-							<td>' . datetime_to_date($r['date']) . '</td>
-							<td>' . $partner->name . '</td>
-							<td>' . $payment_method->name . '</td>
-							<td>' . $group->name . '</td>
-							<td>' . $r['in'] . '</td>
-							<td>' . $r['out'] . '</td>
-							<td>' . ($r['in'] - $r['out']) . '</td>
+							<td>' . $r->description . '</td>
+							<td>' . datetime_to_date($r->date) . '</td>
+							<td>' . $r->partner->name . '</td>
+							<td>' . $r->group->name . '</td>
+							<td>' . $r->paymentmethod->name  . '</td>
+							<td>' . $r->in . '</td>
+							<td>' . $r->out . '</td>
+							<td>' . ($r->in - $r->out) . '</td>
 						</tr>';
 					// Subtotal
-					$total_in += $r['in'];
-					$total_out += $r['out'];
-					$total_sub += ($r['in'] - $r['out']);
+					$total_in += $r->in;
+					$total_out += $r->out;
+					$total_sub += ($r->in - $r->out);
 					} // foreach
 				// Draw the last row with the total values
 				echo '<tr>

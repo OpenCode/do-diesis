@@ -47,7 +47,7 @@
 
 	// Init ReadBean
 	R::setup($db_datas['type'] . ':host=' . $db_datas['host']  . ';dbname=' . $db_datas['dbname'] ,$db_datas['user'] ,$db_datas['password'] );
-	
+
 	// Extract all the main record
 	$records = R::findAll(__MAIN_TABLE__, ' ORDER BY date LIMIT 50');
 

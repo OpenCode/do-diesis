@@ -4,7 +4,7 @@
 	
 	// GENERIC
 	define('__VERSION__', '1.0.0');
-	define('__DEV_MODE_ACTIVE__', true);
+	define('__DEV_MODE_ACTIVE__', false);
 	
 	// DB
 	define('__MAIN_TABLE__', 'main');
