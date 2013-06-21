@@ -38,7 +38,7 @@
 		$main = R::load(__PAYMENT_METHOD_TABLE__, $_GET['unlink']);
 		R::trash( $main );
 		// Set all the record in main table with relation = Null
-		R::exec('UPDATE ' . __MAIN_TABLE__ . ' SET payment_method_id = null WHERE payment_method_id = ? ',array($_GET['unlink']));
+		R::exec('UPDATE ' . __MAIN_TABLE__ . ' SET paymentmethod_id = null WHERE paymentmethod_id = ? ',array($_GET['unlink']));
 	} // if
 	
 	// Extract all the main record
@@ -109,8 +109,8 @@
 										<td width="10%"><b>RELATION %</b></td>
 									</tr>';
 							foreach( $records as $r ) {
-								$relation_records = R::count(__MAIN_TABLE__,' payment_method_id = ?',array($r['id']));
-								if ( R::findOne(__MAIN_TABLE__,' payment_method_id = ? ',array($r['id'])) ) {
+								$relation_records = R::count(__MAIN_TABLE__,' paymentmethod_id = ?',array($r['id']));
+								if ( R::findOne(__MAIN_TABLE__,' paymentmethod_id = ? ',array($r['id'])) ) {
 									$js_on_button = 'confirm_set_null()';
 									}
 								else {
