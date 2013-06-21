@@ -121,7 +121,7 @@
 							<input class="span6" id="partner_id" name="partner_id" type="text" placeholder="Partner" required>
 						</div>
 						<div class="controls controls-row">
-							<input class="span2" id="date" name="date" type="text" placeholder="Date" required readonly value="<?php  echo date("d/m/Y"); ?>">
+							<input class="span2" id="date" name="date" type="text" placeholder="Date" required readonly value="<?php  echo date("d/m/Y"); ?>" onBlur="$('.datepicker').css('display', 'none');">
 							<input class="span3" id="group_id" name="group_id" type="text" placeholder="Group" autocomplete="off" required>
 							<input class="span2" id="payment_method_id" name="payment_method_id" type="text" placeholder="Payment Method" autocomplete="off" required>
 							<input class="span2" name="in" id="in" type="text" placeholder="In">
