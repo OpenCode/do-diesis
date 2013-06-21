@@ -70,7 +70,27 @@
 					<?php echo $Template->get_sidebar_nav('partners'); ?>
 				</div>
 
-				<div class="span10">
+				<div class="span10 main-content">
+
+					<div class="row-fluid">
+						<div id="reports" class="span12 btn-group">
+							<?php 
+							$script_name = $_SERVER["SCRIPT_NAME"];
+							$break = Explode('/', $script_name);
+							$pfile = $break[count($break) - 1]; 
+							// Get all the reports for this page
+							$reports_dir = opendir('reports/' . str_replace('.php', '', $pfile) . '/');
+							while($file = readdir($reports_dir)){ 
+								if($file == "." || $file == "..") continue; 
+								echo '<a class="btn" target="blank" href="reports/' . str_replace('.php', '', $pfile) . '/' . $file . '"><i class="icon-print"></i> ' . ucfirst(str_replace('.php', '', $file)) . '</a>';
+								}
+							closedir($reports_dir);
+							?>
+						</div>
+					</div>
+
+					<hr />
+
 					<form action="<?php echo __PARTNER_PAGE__; ?>" method="post">
 						<div class="controls controls-row">
 							<input class="span11" name="name" type="text" placeholder="Name" required>

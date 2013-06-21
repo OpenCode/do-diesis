@@ -3,8 +3,8 @@
 	// Config everything to work less later!!!!
 	
 	// GENERIC
-	define('__VERSION', '1.0.0');
-	define('__DEV_MODE_ACTIVE', true);
+	define('__VERSION__', '1.0.0');
+	define('__DEV_MODE_ACTIVE__', true);
 	
 	// DB
 	define('__MAIN_TABLE__', 'main');

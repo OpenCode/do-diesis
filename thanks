@@ -1,17 +1,17 @@
 Special Thank go to this project included in DO-Diesis
 
-RedBean :
-	http://www.redbeanphp.com/
-	A PHP ORM with fantastic feature
+	Bootstrap :
+		http://twitter.github.io/bootstrap/index.html
+		A good web apps framework
 
-Bootstrap :
-	http://twitter.github.io/bootstrap/index.html
-	A good web apps framework
+	Chartkick : 
+		https://github.com/ankane/chartkick.js
+		A Javascript script to create charts and graphs
 
-Datapicker :
-	http://www.eyecon.ro/bootstrap-datepicker/
-	A plugin for bootstrap to select date from an interface with normal input html tag
+	Datapicker :
+		http://www.eyecon.ro/bootstrap-datepicker/
+		A plugin for bootstrap to select date from an interface with normal input html tag
 
-Chartkick : 
-	https://github.com/ankane/chartkick.js
-	A Javascript script to create charts and graphs
+	RedBean :
+		http://www.redbeanphp.com/
+		A PHP ORM with fantastic feature

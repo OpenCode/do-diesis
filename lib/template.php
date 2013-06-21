@@ -56,7 +56,7 @@
 			include_once('config.php');
 			return '
 			<hr />
-			<p>Do-Diesis ' . __VERSION . ' - Developed by <a href="http://www.e-ware.org" target="blank"><img src="img/e-ware.png" width="32px"/></a></p>
+			<p>Do-Diesis ' . __VERSION__ . ' - Developed by <a href="http://www.e-ware.org" target="blank"><img src="img/e-ware.png" width="32px"/></a></p>
 			';
 			}
 			
