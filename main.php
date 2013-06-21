@@ -55,12 +55,9 @@
 		$main->date = date_to_datetime($_POST['date']);
 		$main->in = $_POST['in'];
 		$main->out = $_POST['out'];
-		preg_match("#\[(.+?)\]#m",$_POST['group_id'],$group_match);
-		$main->group_id = $group_match[1];
-		preg_match("#\[(.+?)\]#m",$_POST['partner_id'],$group_match);
-		$main->partner_id = $group_match[1];
-		preg_match("#\[(.+?)\]#m",$_POST['payment_method_id'],$group_match);
-		$main->payment_method_id = $group_match[1];
+		$main->group_id = extract_relation_id($_POST['group_id']);
+		$main->partner_id = extract_relation_id($_POST['partner_id']);
+		$main->payment_method_id = extract_relation_id($_POST['payment_method_id']);
 		R::store($main);
 	} // if
 	
@@ -102,7 +99,7 @@
 				<div class="span10 main-content">
 					
 					<div class="row-fluid">
-						<div id="reports" class="span12 btn-group">
+						<div id="reports" class="span12 btn-group reports-buttons">
 							<?php 
 							$script_name = $_SERVER["SCRIPT_NAME"];
 							$break = Explode('/', $script_name);
@@ -117,8 +114,6 @@
 							?>
 						</div>
 					</div>
-
-					<hr />
 
 					<form action="<?php echo __MAIN_PAGE__; ?> " method="post">
 						<div class="controls controls-row span12">

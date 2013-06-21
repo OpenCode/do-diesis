@@ -73,7 +73,7 @@
 				<div class="span10 main-content">
 
 					<div class="row-fluid">
-						<div id="reports" class="span12 btn-group">
+						<div id="reports" class="span12 btn-group reports-buttons">
 							<?php 
 							$script_name = $_SERVER["SCRIPT_NAME"];
 							$break = Explode('/', $script_name);
@@ -88,8 +88,6 @@
 							?>
 						</div>
 					</div>
-
-					<hr />
 
 					<form action="<?php echo __PARTNER_PAGE__; ?>" method="post">
 						<div class="controls controls-row">
