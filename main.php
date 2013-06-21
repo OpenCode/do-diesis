@@ -47,10 +47,15 @@
 
 	// Init ReadBean
 	R::setup($db_datas['type'] . ':host=' . $db_datas['host']  . ';dbname=' . $db_datas['dbname'] ,$db_datas['user'] ,$db_datas['password'] );
-	
+
 	// Insert new record passed to page
 	if ( $_POST ) {
-		$main = R::dispense(__MAIN_TABLE__);
+		if ( isset($_POST['line_id']) && $_POST['line_id'] != '0' ) {
+			$main = R::load(__MAIN_TABLE__, $_POST['line_id']);
+			}
+		else {
+			$main = R::dispense(__MAIN_TABLE__);
+			}
 		$main->description = $_POST['description'];
 		$main->date = date_to_datetime($_POST['date']);
 		$main->in = $_POST['in'];
@@ -60,15 +65,21 @@
 		$main->paymentmethod = R::load(__PAYMENT_METHOD_TABLE__, extract_relation_id($_POST['payment_method_id']) );
 		R::store($main);
 	} // if
-	
+
 	// Delete record passed to page
 	if ( $_GET && isset($_GET['unlink']) ) {
 		$main = R::load(__MAIN_TABLE__, $_GET['unlink']);
 		R::trash( $main );
 	} // if
-	
+
+	// Get the order
+	$order_type = 'date DESC';
+	/*if ( $_GET && isset($_GET['order']) ) {
+		$order_type = $_GET['order'];
+		}*/
+
 	// Extract all the main record
-	$records = R::findAll(__MAIN_TABLE__, ' ORDER BY date ');
+	$records = R::findAll(__MAIN_TABLE__, ' ORDER BY ' . $order_type . ' ');
 
 ?>
 
@@ -117,8 +128,8 @@
 
 					<form action="<?php echo __MAIN_PAGE__; ?> " method="post">
 						<div class="controls controls-row span12">
-							<input class="span6" name="description" type="text" placeholder="Description" required>
-							<input class="span6" id="partner_id" name="partner_id" type="text" placeholder="Partner" required>
+							<input class="span6" id="description" name="description" type="text" placeholder="Description" required>
+							<input class="span6" id="partner_id" name="partner_id" type="text" placeholder="Partner" autocomplete="off" required>
 						</div>
 						<div class="controls controls-row">
 							<input class="span2" id="date" name="date" type="text" placeholder="Date" required readonly value="<?php  echo date("d/m/Y"); ?>" onBlur="$('.datepicker').css('display', 'none');">
@@ -128,6 +139,7 @@
 							<input class="span2" name="out" id="out" type="text" placeholder="Out">
 							<input class="span1 btn btn-primary" type="submit" value="+">
 						</div>
+						<input id="line_id" class="span12" name="line_id" type="hidden" value="0">
 					</form>
 
 					<?php
@@ -152,8 +164,22 @@
 								// Draw a table row
 								echo '<tr>
 										<td>
-											<a onclick="return confirm_delete()" href="?unlink=' . $r['id'] . '">
-												<button class="btn btn-danger btn-mini del_line" data-original-title="">X</button>
+											<!-- DELETE -->
+											<a onclick="return confirm_delete()" href="?unlink=' . $r->id . '">
+												<button class="btn btn-danger btn-mini del_line" >X</button>
+											</a>
+											<!-- EDIT -->
+											<a onclick=\'fill_edit_form(
+												{"line_id" : ' . $r->id . ',
+												"description" : "' . $r->description . '",
+												"partner_id" : "[' . $r->partner->id . '] ' . $r->partner->name . '",
+												"group_id" : "[' . $r->group->id . '] ' . $r->group->name . '",
+												"payment_method_id" : "[' . $r->paymentmethod->id . '] ' . $r->paymentmethod->name . '",
+												"date" : "' . datetime_to_date($r->date) . '",
+												"in" : "' . $r->in . '",
+												"out" : "' . $r->out . '",
+												})\'>
+												<button class="btn btn-mini edit_line" ><i class="icon-edit"></i></button>
 											</a>
 										</td>
 										<td>' . $r->description . '</td>

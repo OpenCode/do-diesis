@@ -28,7 +28,12 @@
 
 	// Insert new record passed to page
 	if ( $_POST ) {
-		$main = R::dispense(__GROUP_TABLE__);
+		if ( isset($_POST['line_id']) && $_POST['line_id'] != '0' ) {
+			$main = R::load(__GROUP_TABLE__, $_POST['line_id']);
+			}
+		else {
+			$main = R::dispense(__GROUP_TABLE__);
+			}
 		$main->name = $_POST['name'];
 		R::store($main);
 	} // if
@@ -91,9 +96,10 @@
 
 					<form action="<?php echo __GROUP_PAGE__; ?>" method="post">
 						<div class="controls controls-row">
-							<input class="span11" name="name" type="text" placeholder="Name" required>
+							<input class="span11" id="name" name="name" type="text" placeholder="Name" required>
 							<input class="span1 btn btn-primary" type="submit" value="+">
 						</div>
+						<input id="line_id" class="span12" name="line_id" type="hidden" value="0">
 					</form>
 
 					<?php
@@ -102,7 +108,7 @@
 							$total_line = R::count(__MAIN_TABLE__);
 							echo '<table class="table table-striped table-bordered table-hover table-condensed">
 									<tr>
-										<td width="5%"></td>
+										<td width="10%"></td>
 										<td><b>NAME</b></td>
 										<td width="10%"><b>RELATION</b></td>
 										<td width="10%"><b>RELATION %</b></td>
@@ -117,8 +123,13 @@
 									}
 								echo '<tr>
 										<td>
-											<a onclick="return ' . $js_on_button . '" href="?unlink=' . $r['id'] . '">
-												<button class="btn btn-danger btn-mini del_line" data-original-title="">X</button>
+											<!-- DELETE -->
+											<a onclick="return ' . $js_on_button . '" href="?unlink=' . $r->id . '">
+												<button class="btn btn-danger btn-mini del_line" >X</button>
+											</a>
+											<!-- EDIT -->
+											<a onclick=\'fill_edit_form({"line_id" : ' . $r->id . ',"name" : "' . $r->name . '",})\'>
+												<button class="btn btn-mini edit_line" ><i class="icon-edit"></i></button>
 											</a>
 										</td>
 										<td>' . $r['name'] . '</td>';
