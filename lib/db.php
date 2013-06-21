@@ -37,12 +37,12 @@
 				$this->connect_to_db = false;
 				$this->datas = $database;
 				} // else
-			} // function
+			} // get_values
 
 		public function get_datas() {
 			$this->get_values();
 			return $this->datas;
-			}
+			} // get_datas
 
 		public function set_config_path( $config_path ) {
 			$this->config_path = $config_path;
@@ -53,9 +53,11 @@
 			// stop the software if the data for connection arent't correct
 			$this->get_values();
 			if ( !$this->connect_to_db || $this->datas['user'] == 'DBUser' || $this->datas['password'] == 'DBPassword' ) {
-				die('A config file been created in your Do-Diesis folder. Please set the correct datas to connect with your database');
+				die('A config file been created in your Do-Diesis folder.\n
+				Please set the correct datas to connect with your database.\n\n
+				Remember to create the database before, too!');
 				}
-			}
+			} // dead_or_alive
 
 		} // class
 

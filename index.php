@@ -97,6 +97,8 @@
 						// if there are lines in the database do your work!
 						$movements_chart_values_in = '{';
 						$movements_chart_values_out = '{';
+						$total_in = 0.00;
+						$total_out = 0.00;
 						if ( count($records) ) {
 							echo '<table class="table table-striped table-bordered table-hover table-condensed">
 									<tr>
@@ -109,8 +111,6 @@
 										<td><b>OUT</b></td>
 										<td><b>SUBTOTAL</b></td>
 									</tr>';
-							$total_in = 0.00;
-							$total_out = 0.00;
 							$total_sub = 0.00;
 							foreach( $records as $r ) {
 								// Draw a table row

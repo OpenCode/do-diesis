@@ -25,14 +25,14 @@
 
 	// Init ReadBean
 	R::setup($db_datas['type'] . ':host=' . $db_datas['host']  . ';dbname=' . $db_datas['dbname'] ,$db_datas['user'] ,$db_datas['password'] );
-	
+
 	// Insert new record passed to page
 	if ( $_POST ) {
 		$main = R::dispense(__GROUP_TABLE__);
 		$main->name = $_POST['name'];
 		R::store($main);
 	} // if
-	
+
 	// Delete record passed to page
 	if ( $_GET && isset($_GET['unlink']) ) {
 		$main = R::load(__GROUP_TABLE__, $_GET['unlink']);
@@ -40,7 +40,7 @@
 		// Set all the record in main table with relation = Null
 		R::exec('UPDATE ' . __MAIN_TABLE__ . ' SET group_id = null WHERE group_id = ? ',array($_GET['unlink']));
 	} // if
-	
+
 	// Extract all the main record
 	$records = R::findAll(__GROUP_TABLE__, ' ORDER BY name ');
 
