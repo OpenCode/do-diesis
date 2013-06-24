@@ -92,6 +92,21 @@
 						<div id="in_out_chart" class="chart span6" style="height: 300px;"></div>
 					</div>
 
+					<?php 
+						$notes = R::findAll(__NOTE_TABLE__, ' ORDER BY date DESC LIMIT 4');
+						if ( count($notes) ) {
+							echo '<h5>Last 4 Notes</h5>
+							<div class="row-fluid">';
+							foreach ( $notes as $n ) {
+								echo '<div class="notes span3">
+								<p><b>' .  datetime_to_date($n->date) . '</b></p>
+								<p>' . $n->text . '</p>
+								</div>';
+								}
+							echo '</div>';
+							}
+					?>
+
 					<h5>Main Table</h5>
 					<?php
 						// if there are lines in the database do your work!
