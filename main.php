@@ -79,17 +79,22 @@
 		}
 
 	// Get the filter
-	/*$filter = 'id';
-	$operator = '>';
+	$filter = '';
+	$operator = '';
 	$value = 0;
-	if ( $_GET && isset($_GET['filter']) ) {
+	if ( $_GET && isset($_GET['filter']) && isset($_GET['operator']) ) {
 		$filter = $_GET['filter'];
 		$operator = $_GET['operator'];
 		$value = $_GET['value'];
-		}*/
+		}
 
 	// Extract all the main record
-	$records = R::findAll(__MAIN_TABLE__, ' ORDER BY ' . $order . ' ');
+	if ( !$filter || !$operator ) {
+		$records = R::findAll(__MAIN_TABLE__, ' ORDER BY ' . $order . ' ');
+		}
+	else {
+		$records = R::find(__MAIN_TABLE__, ' ' . $filter . ' ' . $operator . ' ? ORDER BY ' . $order . ' ', array( $value ));
+		}
 
 ?>
 
@@ -119,22 +124,28 @@
 
 				<div class="span10 main-content">
 					
-					<div class="row-fluid">
-						<div id="reports" class="span12 btn-group reports-buttons">
-							<?php 
-							$script_name = $_SERVER["SCRIPT_NAME"];
-							$break = Explode('/', $script_name);
-							$pfile = $break[count($break) - 1]; 
-							// Get all the reports for this page
-							$reports_dir = opendir('reports/' . str_replace('.php', '', $pfile) . '/');
-							while($file = readdir($reports_dir)){ 
-								if($file == "." || $file == "..") continue; 
-								echo '<a class="btn" target="blank" href="reports/' . str_replace('.php', '', $pfile) . '/' . $file . '"><i class="icon-print"></i> ' . ucfirst(str_replace('.php', '', $file)) . '</a>';
-								}
-							closedir($reports_dir);
-							?>
-						</div>
-					</div>
+					<?php 
+						$script_name = $_SERVER["SCRIPT_NAME"];
+						$break = Explode('/', $script_name);
+						$pfile = $break[count($break) - 1]; 
+						// Get all the reports for this page
+						$reports_dir = opendir('reports/' . str_replace('.php', '', $pfile) . '/');
+						$reports = array();
+						while($file = readdir($reports_dir)){ 
+							if($file == "." || $file == "..") continue; 
+							$reports[] = '<a class="btn" target="blank" href="reports/' . str_replace('.php', '', $pfile) . '/' . $file . '"><i class="icon-print"></i> ' . ucfirst(str_replace('.php', '', $file)) . '</a>';
+							}
+						closedir($reports_dir);
+						if ($reports) {
+							echo '<div class="row-fluid">
+									<div id="reports" class="span12 btn-group reports-buttons">';
+								foreach ( $reports as $r ) {
+									echo $r;
+									}
+							echo '	</div>
+							</div>';
+						}
+					?>
 
 					<form action="<?php echo __MAIN_PAGE__; ?> " method="post">
 						<div class="controls controls-row span12">
@@ -150,6 +161,9 @@
 							<input class="span1 btn btn-primary" type="submit" value="+">
 						</div>
 						<input id="line_id" class="span12" name="line_id" type="hidden" value="0">
+					</form>
+
+					<form action="<?php echo __MAIN_PAGE__; ?> " method="gety">
 					</form>
 
 					<?php

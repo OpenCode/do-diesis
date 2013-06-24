@@ -25,35 +25,34 @@
 
 	// Init ReadBean
 	R::setup($db_datas['type'] . ':host=' . $db_datas['host']  . ';dbname=' . $db_datas['dbname'] ,$db_datas['user'] ,$db_datas['password'] );
-	
+
 	// Insert new record passed to page
 	if ( $_POST ) {
 		if ( isset($_POST['line_id']) && $_POST['line_id'] != '0' ) {
-			$main = R::load(__PAYMENT_METHOD_TABLE__, $_POST['line_id']);
+			$main = R::load(__NOTE_TABLE__, $_POST['line_id']);
 			}
 		else {
-			$main = R::dispense(__PAYMENT_METHOD_TABLE__);
+			$main = R::dispense(__NOTE_TABLE__);
 			}
-		$main->name = $_POST['name'];
+		$main->text = $_POST['text'];
+		$main->date = date_to_datetime($_POST['date']);
 		R::store($main);
 	} // if
-	
+
 	// Delete record passed to page
 	if ( $_GET && isset($_GET['unlink']) ) {
-		$main = R::load(__PAYMENT_METHOD_TABLE__, $_GET['unlink']);
+		$main = R::load(__NOTE_TABLE__, $_GET['unlink']);
 		R::trash( $main );
-		// Set all the record in main table with relation = Null
-		R::exec('UPDATE ' . __MAIN_TABLE__ . ' SET paymentmethod_id = null WHERE paymentmethod_id = ? ',array($_GET['unlink']));
 	} // if
-	
+
 	// Get the order
-	$order_type = 'name ASC';
+	$order_type = 'text ASC';
 	if ( $_GET && isset($_GET['order']) ) {
 		$order_type = $_GET['order'];
 		}
-	
+
 	// Extract all the main record
-	$records = R::findAll(__PAYMENT_METHOD_TABLE__, ' ORDER BY ' . $order_type . ' ');
+	$records = R::findAll(__NOTE_TABLE__, ' ORDER BY ' . $order_type . ' ');
 
 ?>
 
@@ -64,7 +63,6 @@
 		<meta charset="utf-8">
 			<title>Do Diesis</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<!-- Do-Diesis include -->
 		<?php echo $Template->get_head(); ?>
 	</head>
 
@@ -79,7 +77,7 @@
 			<div class="row-fluid">
 
 				<div class="span2">
-					<?php echo $Template->get_sidebar_nav('payment_methods'); ?>
+					<?php echo $Template->get_sidebar_nav('notes'); ?>
 				</div>
 
 				<div class="span10 main-content">
@@ -107,9 +105,10 @@
 						}
 					?>
 
-					<form action="<?php echo __PAYMENT_METHOD_PAGE__; ?>" method="post">
+					<form action="<?php echo __NOTE_PAGE__; ?>" method="post">
 						<div class="controls controls-row">
-							<input class="span11" id="name" name="name" type="text" placeholder="Name" required>
+							<input class="span3" id="date" name="date" type="text" placeholder="Date" required readonly value="<?php  echo date("d/m/Y"); ?>">
+							<input class="span8" id="text" name="text" type="text" placeholder="Text" required onFocus="$('.datepicker').css('display', 'none');">
 							<input class="span1 btn btn-primary" type="submit" value="+">
 						</div>
 						<input id="line_id" class="span12" name="line_id" type="hidden" value="0">
@@ -118,41 +117,26 @@
 					<?php
 						// if there are lines in the database do your work!
 						if ( count($records) ) {
-							$total_line = R::count(__MAIN_TABLE__);
 							echo '<table class="table table-striped table-bordered table-hover table-condensed">
 									<tr>
 										<td width="10%"></td>
-										<td><b><i class="icon-chevron-'.get_order_icon($order_type, 'name').'"></i> <a href="?order='.invert_order($order_type, 'name').'">NAME</a></b></td>
-										<td width="10%"><b>RELATION</b></td>
-										<td width="10%"><b>RELATION %</b></td>
+										<td><b><i class="icon-chevron-'.get_order_icon($order_type, 'date').'"></i> <a href="?order='.invert_order($order_type, 'date').'">DATE</a></b></td>
+										<td><b><i class="icon-chevron-'.get_order_icon($order_type, 'text').'"></i> <a href="?order='.invert_order($order_type, 'text').'">TEXT</a></b></td>
 									</tr>';
 							foreach( $records as $r ) {
-								$relation_records = R::count(__MAIN_TABLE__,' paymentmethod_id = ?',array($r['id']));
-								if ( R::findOne(__MAIN_TABLE__,' paymentmethod_id = ? ',array($r['id'])) ) {
-									$js_on_button = 'confirm_set_null()';
-									}
-								else {
-									$js_on_button = 'confirm_delete()';
-									}
 								echo '<tr>
 										<td>
 											<!-- DELETE -->
-											<a onclick="return ' . $js_on_button . '" href="?unlink=' . $r->id . '">
+											<a onclick="return confirm_delete()" href="?unlink=' . $r->id . '">
 												<button class="btn btn-danger btn-mini del_line" >X</button>
 											</a>
 											<!-- EDIT -->
-											<a onclick=\'fill_edit_form({"line_id" : ' . $r->id . ',"name" : "' . $r->name . '",})\'>
+											<a onclick=\'fill_edit_form({"line_id" : ' . $r->id . ',"text" : "' . $r->text . '","date" : "' . datetime_to_date($r->date) . '",})\'>
 												<button class="btn btn-mini edit_line" ><i class="icon-edit"></i></button>
 											</a>
 										</td>
-										<td>' . $r['name'] . '</td>';
-										if ($total_line) {
-											echo '<td><span class="badge badge-success">' . $relation_records . '</span></td>
-											<td><div class="progress"><div class="bar" style="width: ' . (($relation_records/$total_line)*100) . '%;"></div></div></td>';
-											}
-										else {
-											echo '<td></td><td></td>';
-											}
+										<td>' . datetime_to_date($r->date). '</td>
+										<td>' . $r->text . '</td>';
 									echo '</tr>';
 								} // foreach
 							echo '</table>';
@@ -177,7 +161,14 @@
 	</body>
 	
 	<script type="text/javascript">
+
+		$('#date').datepicker({ 
+			format : "dd/mm/yyyy",
+			weekStart : 1,
+			})
+		
 		<?php echo $Template->common_script(); ?>
+
 	</script>
 
 </html>
