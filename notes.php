@@ -51,8 +51,25 @@
 		$order_type = $_GET['order'];
 		}
 
+	// Get the filter
+	$filter = '';
+	$filter_text = '';
+	if ( $_GET && isset($_GET['filter_text']) || isset($_GET['filter_text']) ) {
+		// Filter Name
+		if ( isset($_GET['filter_text']) && $_GET['filter_text'] ) {
+			$filter .= " text LIKE '%" . $_GET['filter_text'] . "%' AND ";
+			$filter_text = $_GET['filter_text'];
+			}
+		// Clear last chars from filter string
+		$filter = rtrim($filter,'AND ');
+		}
 	// Extract all the main record
-	$records = R::findAll(__NOTE_TABLE__, ' ORDER BY ' . $order_type . ' ');
+	if ( !$filter) {
+		$records = R::findAll(__NOTE_TABLE__, ' ORDER BY ' . $order_type . ' ');
+		}
+	else {
+		$records = R::find(__NOTE_TABLE__, ' ' . $filter . ' ORDER BY ' . $order_type . ' ');
+		}
 
 ?>
 
@@ -112,6 +129,13 @@
 							<input class="span1 btn btn-primary" type="submit" value="+">
 						</div>
 						<input id="line_id" class="span12" name="line_id" type="hidden" value="0">
+					</form>
+
+					<form action="<?php echo __NOTE_PAGE__; ?>" method="get">
+						<div class="controls controls-row">
+							<input class="span11" id="filter_text" name="filter_text" type="text" placeholder="Filter Text" value="<?php echo $filter_text; ?>">
+							<button class="span1 btn btn-primary" type="submit"><i class="icon-search icon-white"></i></button>
+						</div>
 					</form>
 
 					<?php
