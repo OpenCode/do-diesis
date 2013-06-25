@@ -14,17 +14,18 @@ function printReport(page) {
 	printWindow.close();
 	}
 
-function fill_edit_form(vals) {
-	for (key in vals) {
-		$('#' + key).val(vals[key]);
-		}
-	}
-
 function show_form(form_type) {
 	if ( $('#' + form_type + '_form').is(":visible") ) {
 		$('#' + form_type + '_form').hide();
 		}
 	else {
 		$('#' + form_type + '_form').show();
+		}
+	}
+
+function fill_edit_form(vals) {
+	$('#insert_form').show();
+	for (key in vals) {
+		$('#' + key).val(vals[key]);
 		}
 	}
