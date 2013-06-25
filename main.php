@@ -193,12 +193,12 @@
 					<form action="<?php echo __MAIN_PAGE__; ?> " method="get">
 						<div class="controls controls-row span12">
 							<input class="span6" id="filter_description" name="filter_description" type="text" placeholder="Filter Description" value="<?php echo $filter_description; ?>">
-							<input class="span6" id="filter_partner_id" name="filter_partner_id" type="text" placeholder="Partner" autocomplete="off" value="<?php echo $filter_partner_id; ?>">
+							<input class="span6" id="filter_partner_id" name="filter_partner_id" type="text" placeholder="Filter Partner" autocomplete="off" value="<?php echo $filter_partner_id; ?>">
 						</div>
 						<div class="controls controls-row">
 							<input class="span3" id="filter_date" name="filter_date" type="text" placeholder="Filter Date" value="<?php echo $filter_date; ?>" autocomplete="off">
-							<input class="span4" id="filter_group_id" name="filter_group_id" type="text" placeholder="Group" autocomplete="off" value="<?php echo $filter_group_id; ?>">
-							<input class="span4" id="filter_payment_method_id" name="filter_payment_method_id" type="text" placeholder="Payment Method" autocomplete="off" value="<?php echo $filter_payment_method_id; ?>">
+							<input class="span4" id="filter_group_id" name="filter_group_id" type="text" placeholder="Filter Group" autocomplete="off" value="<?php echo $filter_group_id; ?>">
+							<input class="span4" id="filter_payment_method_id" name="filter_payment_method_id" type="text" placeholder="Filter Payment Method" autocomplete="off" value="<?php echo $filter_payment_method_id; ?>">
 							<button class="span1 btn btn-primary" type="submit" value=""><i class="icon-search icon-white"></i></button>
 						</div>
 					</form>
