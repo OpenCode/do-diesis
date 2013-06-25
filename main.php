@@ -80,20 +80,47 @@
 
 	// Get the filter
 	$filter = '';
-	$operator = '';
-	$value = 0;
-	if ( $_GET && isset($_GET['filter']) && isset($_GET['operator']) ) {
-		$filter = $_GET['filter'];
-		$operator = $_GET['operator'];
-		$value = $_GET['value'];
+	$filter_description = '';
+	$filter_date = '';
+	$filter_partner_id = '';
+	$filter_group_id = '';
+	$filter_payment_method_id = '';
+	if ( $_GET && isset($_GET['filter_description']) || isset($_GET['filter_date']) ) {
+		// Filter Description
+		if ( isset($_GET['filter_description']) && $_GET['filter_description'] ) {
+			$filter .= " description LIKE '%" . $_GET['filter_description'] . "%' AND ";
+			$filter_description = $_GET['filter_description'];
+			}
+		// Filter Date
+		if ( isset($_GET['filter_date']) && $_GET['filter_date'] ) {
+			$filter .= " date = '" . date_to_datetime($_GET['filter_date']) . "' AND ";
+			$filter_date = $_GET['filter_date'];
+			}
+		// Filter Partner
+		if ( isset($_GET['filter_partner_id']) && $_GET['filter_partner_id'] ) {
+			$filter .= " partner_id = " . extract_relation_id($_GET['filter_partner_id']) . " AND ";
+			$filter_partner_id = $_GET['filter_partner_id'];
+			}
+		// Filter Group
+		if ( isset($_GET['filter_group_id']) && $_GET['filter_group_id'] ) {
+			$filter .= " group_id = " . extract_relation_id($_GET['filter_group_id']) . " AND ";
+			$filter_group_id = $_GET['filter_group_id'];
+			}
+		// Filter Payment Method
+		if ( isset($_GET['filter_payment_method_id']) && $_GET['filter_payment_method_id'] ) {
+			$filter .= " paymentmethod_id = " . extract_relation_id($_GET['filter_payment_method_id']) . " AND ";
+			$filter_payment_method_id = $_GET['filter_payment_method_id'];
+			}
+		// Clear last chars from filter string
+		$filter = rtrim($filter,'AND ');
 		}
 
 	// Extract all the main record
-	if ( !$filter || !$operator ) {
+	if ( !$filter) {
 		$records = R::findAll(__MAIN_TABLE__, ' ORDER BY ' . $order . ' ');
 		}
 	else {
-		$records = R::find(__MAIN_TABLE__, ' ' . $filter . ' ' . $operator . ' ? ORDER BY ' . $order . ' ', array( $value ));
+		$records = R::find(__MAIN_TABLE__, ' ' . $filter . ' ORDER BY ' . $order . ' ');
 		}
 
 ?>
@@ -163,7 +190,17 @@
 						<input id="line_id" class="span12" name="line_id" type="hidden" value="0">
 					</form>
 
-					<form action="<?php echo __MAIN_PAGE__; ?> " method="gety">
+					<form action="<?php echo __MAIN_PAGE__; ?> " method="get">
+						<div class="controls controls-row span12">
+							<input class="span6" id="filter_description" name="filter_description" type="text" placeholder="Filter Description" value="<?php echo $filter_description; ?>">
+							<input class="span6" id="filter_partner_id" name="filter_partner_id" type="text" placeholder="Partner" autocomplete="off" value="<?php echo $filter_partner_id; ?>">
+						</div>
+						<div class="controls controls-row">
+							<input class="span3" id="filter_date" name="filter_date" type="text" placeholder="Filter Date" value="<?php echo $filter_date; ?>" autocomplete="off">
+							<input class="span4" id="filter_group_id" name="filter_group_id" type="text" placeholder="Group" autocomplete="off" value="<?php echo $filter_group_id; ?>">
+							<input class="span4" id="filter_payment_method_id" name="filter_payment_method_id" type="text" placeholder="Payment Method" autocomplete="off" value="<?php echo $filter_payment_method_id; ?>">
+							<button class="span1 btn btn-primary" type="submit" value=""><i class="icon-search icon-white"></i></button>
+						</div>
 					</form>
 
 					<?php
@@ -255,7 +292,26 @@
 			weekStart : 1,
 			})
 
+		$('#filter_date').datepicker({ 
+			format : "dd/mm/yyyy",
+			weekStart : 1,
+			})
+
 		$("#group_id").typeahead({
+			source: function(query, process) {
+				$.post("lib/<?php echo __GET_GROUP_PAGE__; ?>", { 'group_name': query }, function(data) {
+					objects = []; // going to browser
+					map = {}; // storing for later
+					$.each(data, function(i, entity) {
+						//map[entity.name] = name;
+						objects.push( '[' + entity.id + '] ' + entity.name);
+					});
+					return process(objects);
+				},"json");
+			},
+		});
+
+		$("#filter_group_id").typeahead({
 			source: function(query, process) {
 				$.post("lib/<?php echo __GET_GROUP_PAGE__; ?>", { 'group_name': query }, function(data) {
 					objects = []; // going to browser
@@ -283,7 +339,35 @@
 			},
 		});
 
+		$("#filter_partner_id").typeahead({
+			source: function(query, process) {
+				$.post("lib/<?php echo __GET_PARTNER_PAGE__; ?>", { 'partner_name': query }, function(data) {
+					objects = []; // going to browser
+					map = {}; // storing for later
+					$.each(data, function(i, entity) {
+						//map[entity.name] = name;
+						objects.push( '[' + entity.id + '] ' + entity.name);
+					});
+					return process(objects);
+				},"json");
+			},
+		});
+
 		$("#payment_method_id").typeahead({
+			source: function(query, process) {
+				$.post("lib/<?php echo __GET_PAYMENT_METHOD_PAGE__; ?>", { 'pm_name': query }, function(data) {
+					objects = []; // going to browser
+					map = {}; // storing for later
+					$.each(data, function(i, entity) {
+						//map[entity.name] = name;
+						objects.push( '[' + entity.id + '] ' + entity.name);
+					});
+					return process(objects);
+				},"json");
+			},
+		});
+
+		$("#filter_payment_method_id").typeahead({
 			source: function(query, process) {
 				$.post("lib/<?php echo __GET_PAYMENT_METHOD_PAGE__; ?>", { 'pm_name': query }, function(data) {
 					objects = []; // going to browser
