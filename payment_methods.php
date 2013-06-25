@@ -25,7 +25,7 @@
 
 	// Init ReadBean
 	R::setup($db_datas['type'] . ':host=' . $db_datas['host']  . ';dbname=' . $db_datas['dbname'] ,$db_datas['user'] ,$db_datas['password'] );
-	
+
 	// Insert new record passed to page
 	if ( $_POST ) {
 		if ( isset($_POST['line_id']) && $_POST['line_id'] != '0' ) {
@@ -37,7 +37,7 @@
 		$main->name = $_POST['name'];
 		R::store($main);
 	} // if
-	
+
 	// Delete record passed to page
 	if ( $_GET && isset($_GET['unlink']) ) {
 		$main = R::load(__PAYMENT_METHOD_TABLE__, $_GET['unlink']);
@@ -45,15 +45,33 @@
 		// Set all the record in main table with relation = Null
 		R::exec('UPDATE ' . __MAIN_TABLE__ . ' SET paymentmethod_id = null WHERE paymentmethod_id = ? ',array($_GET['unlink']));
 	} // if
-	
+
 	// Get the order
 	$order_type = 'name ASC';
 	if ( $_GET && isset($_GET['order']) ) {
 		$order_type = $_GET['order'];
 		}
-	
+
+	// Get the filter
+	$filter = '';
+	$filter_name = '';
+	if ( $_GET && isset($_GET['filter_name']) || isset($_GET['filter_name']) ) {
+		// Filter Name
+		if ( isset($_GET['filter_name']) && $_GET['filter_name'] ) {
+			$filter .= " name LIKE '%" . $_GET['filter_name'] . "%' AND ";
+			$filter_name = $_GET['filter_name'];
+			}
+		// Clear last chars from filter string
+		$filter = rtrim($filter,'AND ');
+		}
+
 	// Extract all the main record
-	$records = R::findAll(__PAYMENT_METHOD_TABLE__, ' ORDER BY ' . $order_type . ' ');
+	if ( !$filter) {
+		$records = R::findAll(__PAYMENT_METHOD_TABLE__, ' ORDER BY ' . $order_type . ' ');
+		}
+	else {
+		$records = R::find(__PAYMENT_METHOD_TABLE__, ' ' . $filter . ' ORDER BY ' . $order_type . ' ');
+		}
 
 ?>
 
@@ -113,6 +131,13 @@
 							<input class="span1 btn btn-primary" type="submit" value="+">
 						</div>
 						<input id="line_id" class="span12" name="line_id" type="hidden" value="0">
+					</form>
+
+					<form action="<?php echo __PAYMENT_METHOD_PAGE__; ?>" method="get">
+						<div class="controls controls-row">
+							<input class="span11" id="filter_name" name="filter_name" type="text" placeholder="Filter Name" value="<?php echo $filter_name; ?>">
+							<button class="span1 btn btn-primary" type="submit"><i class="icon-search icon-white"></i></button>
+						</div>
 					</form>
 
 					<?php
