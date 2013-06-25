@@ -113,19 +113,17 @@
 							$reports[] = '<a class="btn" target="blank" href="reports/' . str_replace('.php', '', $pfile) . '/' . $file . '"><i class="icon-print"></i> ' . ucfirst(str_replace('.php', '', $file)) . '</a>';
 							}
 						closedir($reports_dir);
-						if ($reports) {
-							echo '<div class="row-fluid">
-									<div id="reports" class="btn-group reports-buttons">
-										<a onClick="show_form(\'insert\');" href="#" role="button" class="btn"><i class="icon-file"></i></a>
-										<a onClick="show_form(\'search\');" href="#" role="button" class="btn"><i class="icon-search"></i></a>';
-							echo '	</div>
-									<div id="reports" class="btn-group reports-buttons">';
-										foreach ( $reports as $r ) {
-											echo $r;
-											}
-							echo '	</div>
-							</div>';
-						}
+						echo '<div class="row-fluid">
+								<div id="reports" class="btn-group reports-buttons">
+									<a onClick="show_form(\'insert\');" href="#" role="button" class="btn"><i class="icon-file"></i></a>
+									<a onClick="show_form(\'search\');" href="#" role="button" class="btn"><i class="icon-search"></i></a>';
+						echo '	</div>
+								<div id="reports" class="btn-group reports-buttons">';
+									foreach ( $reports as $r ) {
+										echo $r;
+										}
+						echo '	</div>
+						</div>';
 					?>
 
 					<form id="insert_form" class="hide" action="<?php echo __GROUP_PAGE__; ?>" method="post">
