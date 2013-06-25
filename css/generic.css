@@ -7,20 +7,9 @@
 	-moz-border-radius: 0;
 	border-radius: 0;
 }
-
-.chart {
-	border: 1px solid #ccc;
-	padding: 5px;
-}
-
-.progress {
-	margin-bottom: 0;
-}
-
-.reports-buttons {
-	margin-bottom: 15px;
-}
-
+.chart { border: 1px solid #ccc; padding: 5px; }
+.progress { margin-bottom: 0; }
+.reports-buttons { margin-bottom: 15px; }
 .notes {
 	margin-top: 10px;
 	padding: 15px;

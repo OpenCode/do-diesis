@@ -115,16 +115,20 @@
 						closedir($reports_dir);
 						if ($reports) {
 							echo '<div class="row-fluid">
-									<div id="reports" class="span12 btn-group reports-buttons">';
-								foreach ( $reports as $r ) {
-									echo $r;
-									}
+									<div id="reports" class="btn-group reports-buttons">
+										<a onClick="show_form(\'insert\');" href="#" role="button" class="btn"><i class="icon-file"></i></a>
+										<a onClick="show_form(\'search\');" href="#" role="button" class="btn"><i class="icon-search"></i></a>';
+							echo '	</div>
+									<div id="reports" class="btn-group reports-buttons">';
+										foreach ( $reports as $r ) {
+											echo $r;
+											}
 							echo '	</div>
 							</div>';
 						}
 					?>
 
-					<form action="<?php echo __PARTNER_PAGE__; ?>" method="post">
+					<form id="insert_form" class="hide" action="<?php echo __PARTNER_PAGE__; ?>" method="post">
 						<div class="controls controls-row">
 							<input class="span11" id="name" name="name" type="text" placeholder="Name" required>
 							<input class="span1 btn btn-primary" type="submit" value="+">
@@ -132,7 +136,7 @@
 						<input id="line_id" class="span12" name="line_id" type="hidden" value="0">
 					</form>
 
-					<form action="<?php echo __PARTNER_PAGE__; ?>" method="get">
+					<form id="search_form" class="<? if ( !$filter ) echo 'hide'; ?>"action="<?php echo __PARTNER_PAGE__; ?>" method="get">
 						<div class="controls controls-row">
 							<input class="span11" id="filter_name" name="filter_name" type="text" placeholder="Filter Name" value="<?php echo $filter_name; ?>">
 							<button class="span1 btn btn-primary" type="submit"><i class="icon-search icon-white"></i></button>
