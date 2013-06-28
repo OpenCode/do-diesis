@@ -72,16 +72,21 @@
 		R::trash( $main );
 	} // if
 
+	// Get the limit
+	$limit = '50';
+	if ( $_GET && isset($_GET['limit']) )
+		$limit = $_GET['limit'];
+
 	// Get the order
 	$order = 'date DESC';
-	if ( $_GET && isset($_GET['order']) ) {
+	if ( $_GET && isset($_GET['order']) )
 		$order = $_GET['order'];
-		}
 
 	// Get the filter
 	$filter = '';
 	$filter_description = '';
-	$filter_date = '';
+	$filter_date_from = '';
+	$filter_date_to = '';
 	$filter_partner_id = '';
 	$filter_group_id = '';
 	$filter_payment_method_id = '';
@@ -91,10 +96,15 @@
 			$filter .= " description LIKE '%" . $_GET['filter_description'] . "%' AND ";
 			$filter_description = $_GET['filter_description'];
 			}
-		// Filter Date
-		if ( isset($_GET['filter_date']) && $_GET['filter_date'] ) {
-			$filter .= " date = '" . date_to_datetime($_GET['filter_date']) . "' AND ";
-			$filter_date = $_GET['filter_date'];
+		// Filter Date From
+		if ( isset($_GET['filter_date_from']) && $_GET['filter_date_from'] ) {
+			$filter .= " date >= '" . date_to_datetime($_GET['filter_date_from']) . "' AND ";
+			$filter_date_from = $_GET['filter_date_from'];
+			}
+		// Filter Date To
+		if ( isset($_GET['filter_date_to']) && $_GET['filter_date_to'] ) {
+			$filter .= " date <= '" . date_to_datetime($_GET['filter_date_to']) . "' AND ";
+			$filter_date_to = $_GET['filter_date_to'];
 			}
 		// Filter Partner
 		if ( isset($_GET['filter_partner_id']) && $_GET['filter_partner_id'] ) {
@@ -116,12 +126,10 @@
 		}
 
 	// Extract all the main record
-	if ( !$filter) {
-		$records = R::findAll(__MAIN_TABLE__, ' ORDER BY ' . $order . ' ');
-		}
-	else {
-		$records = R::find(__MAIN_TABLE__, ' ' . $filter . ' ORDER BY ' . $order . ' ');
-		}
+	if ( !$filter)
+		$records = R::findAll(__MAIN_TABLE__, ' ORDER BY ' . $order . ' LIMIT ' . $limit);
+	else
+		$records = R::find(__MAIN_TABLE__, ' ' . $filter . ' ORDER BY ' . $order . ' ' . ' LIMIT ' . $limit);
 
 ?>
 
@@ -200,8 +208,9 @@
 							<input class="span6" id="filter_partner_id" name="filter_partner_id" type="text" placeholder="Filter Partner" autocomplete="off" value="<?php echo $filter_partner_id; ?>">
 						</div>
 						<div class="controls controls-row">
-							<input class="span3" id="filter_date" name="filter_date" type="text" placeholder="Filter Date" value="<?php echo $filter_date; ?>" autocomplete="off">
-							<input class="span4" id="filter_group_id" name="filter_group_id" type="text" placeholder="Filter Group" autocomplete="off" value="<?php echo $filter_group_id; ?>">
+							<input class="span2" id="filter_date_from" name="filter_date_from" type="text" placeholder="Filter Date From" value="<?php echo $filter_date_from; ?>" autocomplete="off">
+							<input class="span2" id="filter_date_to" name="filter_date_to" type="text" placeholder="Filter Date To" value="<?php echo $filter_date_to; ?>" autocomplete="off">
+							<input class="span3" id="filter_group_id" name="filter_group_id" type="text" placeholder="Filter Group" autocomplete="off" value="<?php echo $filter_group_id; ?>">
 							<input class="span4" id="filter_payment_method_id" name="filter_payment_method_id" type="text" placeholder="Filter Payment Method" autocomplete="off" value="<?php echo $filter_payment_method_id; ?>">
 							<button class="span1 btn btn-primary" type="submit" value=""><i class="icon-search icon-white"></i></button>
 						</div>
@@ -296,7 +305,12 @@
 			weekStart : 1,
 			})
 
-		$('#filter_date').datepicker({ 
+		$('#filter_date_from').datepicker({ 
+			format : "dd/mm/yyyy",
+			weekStart : 1,
+			})
+
+		$('#filter_date_to').datepicker({ 
 			format : "dd/mm/yyyy",
 			weekStart : 1,
 			})
