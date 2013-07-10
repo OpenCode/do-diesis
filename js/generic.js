@@ -14,18 +14,17 @@ function printReport(page) {
 	printWindow.close();
 	}
 
-function show_form(form_type) {
-	if ( $('#' + form_type + '_form').is(":visible") ) {
-		$('#' + form_type + '_form').hide();
-		}
-	else {
-		$('#' + form_type + '_form').show();
+function fill_edit_form(vals) {
+	$('#read_modal').modal('hide');
+	$('#insert_modal').modal();
+	for (key in vals) {
+		$('#' + key).val(vals[key]);
 		}
 	}
 
-function fill_edit_form(vals) {
-	$('#insert_form').show();
+function fill_read_section(vals) {
+	$('#read_modal').modal();
 	for (key in vals) {
-		$('#' + key).val(vals[key]);
+		$('#read_' + key).text(vals[key]);
 		}
 	}

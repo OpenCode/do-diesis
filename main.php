@@ -159,6 +159,11 @@
 
 				<div class="span10 main-content">
 					
+					<div class="row-fluid">
+						<div class="btn-group reports-buttons">
+							<a onClick="$('#insert_modal').modal();" href="#" role="button" class="btn"><i class="icon-file"></i></a>
+						</div>
+					
 					<?php 
 						$script_name = $_SERVER["SCRIPT_NAME"];
 						$break = Explode('/', $script_name);
@@ -172,37 +177,17 @@
 							}
 						closedir($reports_dir);
 						if ($reports) {
-							echo '<div class="row-fluid">
-									<div id="reports" class="btn-group reports-buttons">
-										<a onClick="show_form(\'insert\');" href="#" role="button" class="btn"><i class="icon-file"></i></a>
-										<a onClick="show_form(\'search\');" href="#" role="button" class="btn"><i class="icon-search"></i></a>';
-							echo '	</div>
-									<div id="reports" class="btn-group reports-buttons">';
+							echo '<div id="reports" class="btn-group reports-buttons">';
 										foreach ( $reports as $r ) {
 											echo $r;
 											}
-							echo '	</div>
-							</div>';
+							echo '	</div>';
 						}
 					?>
+					
+					</div>
 
-					<form id="insert_form" class="hide" action="<?php echo __MAIN_PAGE__; ?> " method="post">
-						<div class="controls controls-row span12">
-							<input class="span6" id="description" name="description" type="text" placeholder="Description" required>
-							<input class="span6" id="partner_id" name="partner_id" type="text" placeholder="Partner" autocomplete="off" required>
-						</div>
-						<div class="controls controls-row">
-							<input class="span2" id="date" name="date" type="text" placeholder="Date" required readonly value="<?php  echo date("d/m/Y"); ?>">
-							<input class="span3" id="group_id" name="group_id" type="text" placeholder="Group" autocomplete="off" required onFocus="$('.datepicker').css('display', 'none');">
-							<input class="span2" id="payment_method_id" name="payment_method_id" type="text" placeholder="Payment Method" autocomplete="off" required>
-							<input class="span2" name="in" id="in" type="text" placeholder="In">
-							<input class="span2" name="out" id="out" type="text" placeholder="Out">
-							<input class="span1 btn btn-primary" type="submit" value="+">
-						</div>
-						<input id="line_id" class="span12" name="line_id" type="hidden" value="0">
-					</form>
-
-					<form id="search_form" class="<? if ( !$filter ) echo 'hide'; ?>" action="<?php echo __MAIN_PAGE__; ?> " method="get">
+					<form id="search_form" action="<?php echo __MAIN_PAGE__; ?> " method="get">
 						<div class="controls controls-row span12">
 							<input class="span6" id="filter_description" name="filter_description" type="text" placeholder="Filter Description" value="<?php echo $filter_description; ?>">
 							<input class="span6" id="filter_partner_id" name="filter_partner_id" type="text" placeholder="Filter Partner" autocomplete="off" value="<?php echo $filter_partner_id; ?>">
@@ -240,7 +225,21 @@
 										<td>
 											<!-- DELETE -->
 											<a onclick="return confirm_delete()" href="?unlink=' . $r->id . '">
-												<button class="btn btn-danger btn-mini del_line" >X</button>
+												<button class="btn btn-danger btn-mini del_line" ><i class="icon-remove-circle"></i></button>
+											</a>
+											<!-- READ -->
+											<a onclick=\'fill_read_section(
+												{"line_id" : ' . $r->id . ',
+												"description" : "' . $r->description . '",
+												"partner_id" : "' . $r->partner->name . '",
+												"group_id" : "' . $r->group->name . '",
+												"payment_method_id" : "' . $r->paymentmethod->name . '",
+												"date" : "' . datetime_to_date($r->date) . '",
+												"in" : "' . $r->in . '",
+												"out" : "' . $r->out . '",
+												"total" : "' . ($r->in - $r->out) . '",
+												})\'>
+												<button class="btn btn-mini edit_line" ><i class="icon-book"></i></button>
 											</a>
 											<!-- EDIT -->
 											<a onclick=\'fill_edit_form(
@@ -293,6 +292,96 @@
 			<div class="row-fluid">
 				<?php echo $Template->footer(); ?>
 			</div><!-- .row -->
+
+		<!-- New Modal -->
+		<div id="insert_modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h3>Insert record</h3>
+			</div>
+			<form id="insert_form" action="<?php echo __MAIN_PAGE__; ?> " method="post">
+				<div class="modal-body">
+					<input id="line_id" class="span12" name="line_id" type="hidden" value="0">
+					<table class="table table-unbordered table-condensed">
+						<tr>
+							<td colspan="6"><b>DESCRIPTION</b></td>
+						</tr>
+						<tr>
+							<td colspan="6"><input id="description" name="description" type="text" placeholder="Description" required></td>
+						</tr>
+						<tr>
+							<td colspan="3" width="50%"><b>PARTNER</b></td>
+							<td colspan="3" width="50%"><b>DATE</b></td>
+						</tr>
+						<tr>
+							<td colspan="3"><input id="partner_id" name="partner_id" type="text" placeholder="Partner" autocomplete="off" required></td>
+							<td colspan="3"><input id="date" name="date" type="text" placeholder="Date" required readonly value="<?php  echo date("d/m/Y"); ?>"></td>
+						</tr>
+						<tr>
+							<td colspan="3"><b>GROUP</b></td>
+							<td colspan="3"><b>PAYMENT METHOD</b></td>
+						</tr>
+						<tr>
+							<td colspan="3"><input id="group_id" name="group_id" type="text" placeholder="Group" autocomplete="off" required onFocus="$('.datepicker').css('display', 'none');"></td>
+							<td colspan="3"><input id="payment_method_id" name="payment_method_id" type="text" placeholder="Payment Method" autocomplete="off" required></td>
+						</tr>
+						<tr>
+							<td colspan="3"><b>IN</b></td>
+							<td colspan="3"><b>OUT</b></td>
+						</tr>
+						<tr>
+							<td colspan="3"><input name="in" id="in" type="text" placeholder="In"></td>
+							<td colspan="3"><input name="out" id="out" type="text" placeholder="Out"></td>
+						</tr>
+					</table>
+				</div>
+				<div class="modal-footer">
+					<input class="span1 btn btn-primary" type="submit" value="+">
+					<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+				</div>
+			</form>
+		</div>
+
+		<!-- Read Modal -->
+		<div id="read_modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h3 id="read_description"></h3>
+			</div>
+			<div class="modal-body">
+				<table class="table table-unbordered table-condensed">
+					<tr>
+						<td colspan="3" width="50%"><b>PARTNER</b></td>
+						<td colspan="3" width="50%"><b>DATE</b></td>
+					</tr>
+					<tr>
+						<td colspan="3"><p id="read_partner_id" ></p></td>
+						<td colspan="3"><p id="read_date" ></p></td>
+					</tr>
+					<tr>
+						<td colspan="3"><b>GROUP</b></td>
+						<td colspan="3"><b>PAYMENT METHOD</b></td>
+					</tr>
+					<tr>
+						<td colspan="3"><p id="read_group_id" ></p></td>
+						<td colspan="3"><p id="read_payment_method_id" ></p></td>
+					</tr>
+					<tr>
+						<td colspan="2"><b>IN</b></td>
+						<td colspan="2"><b>OUT</b></td>
+						<td colspan="2"><b>TOTAL</b></td>
+					</tr>
+					<tr>
+						<td colspan="2"><p id="read_in" ></p></td>
+						<td colspan="2"><p id="read_out" ></p></td>
+						<td colspan="2"><p id="read_total" ></p></td>
+					</tr>
+				</table>
+			</div>
+			<div class="modal-footer">
+				<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+			</div>
+		</div>
 
 		</div><!-- .container -->
 

@@ -21,3 +21,6 @@
 	-o-transform: rotate(2deg);
 	-ms-transform: rotate(2deg);
 }
+a:hover, a:focus {text-decoration: none;}
+.table-unbordered {border-top: 0px solid #fff;}
+.table-unbordered th, .table-unbordered td {border-top: 0px solid #fff;}
