@@ -227,20 +227,6 @@
 											<a onclick="return confirm_delete()" href="?unlink=' . $r->id . '">
 												<button class="btn btn-danger btn-mini del_line" ><i class="icon-remove-circle"></i></button>
 											</a>
-											<!-- READ -->
-											<a onclick=\'fill_read_section(
-												{"line_id" : ' . $r->id . ',
-												"description" : "' . $r->description . '",
-												"partner_id" : "' . $r->partner->name . '",
-												"group_id" : "' . $r->group->name . '",
-												"payment_method_id" : "' . $r->paymentmethod->name . '",
-												"date" : "' . datetime_to_date($r->date) . '",
-												"in" : "' . $r->in . '",
-												"out" : "' . $r->out . '",
-												"total" : "' . ($r->in - $r->out) . '",
-												})\'>
-												<button class="btn btn-mini edit_line" ><i class="icon-book"></i></button>
-											</a>
 											<!-- EDIT -->
 											<a onclick=\'fill_edit_form(
 												{"line_id" : ' . $r->id . ',
@@ -340,47 +326,6 @@
 					<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
 				</div>
 			</form>
-		</div>
-
-		<!-- Read Modal -->
-		<div id="read_modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-				<h3 id="read_description"></h3>
-			</div>
-			<div class="modal-body">
-				<table class="table table-unbordered table-condensed">
-					<tr>
-						<td colspan="3" width="50%"><b>PARTNER</b></td>
-						<td colspan="3" width="50%"><b>DATE</b></td>
-					</tr>
-					<tr>
-						<td colspan="3"><p id="read_partner_id" ></p></td>
-						<td colspan="3"><p id="read_date" ></p></td>
-					</tr>
-					<tr>
-						<td colspan="3"><b>GROUP</b></td>
-						<td colspan="3"><b>PAYMENT METHOD</b></td>
-					</tr>
-					<tr>
-						<td colspan="3"><p id="read_group_id" ></p></td>
-						<td colspan="3"><p id="read_payment_method_id" ></p></td>
-					</tr>
-					<tr>
-						<td colspan="2"><b>IN</b></td>
-						<td colspan="2"><b>OUT</b></td>
-						<td colspan="2"><b>TOTAL</b></td>
-					</tr>
-					<tr>
-						<td colspan="2"><p id="read_in" ></p></td>
-						<td colspan="2"><p id="read_out" ></p></td>
-						<td colspan="2"><p id="read_total" ></p></td>
-					</tr>
-				</table>
-			</div>
-			<div class="modal-footer">
-				<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-			</div>
 		</div>
 
 		</div><!-- .container -->
