@@ -105,43 +105,15 @@
 								}
 							echo '</div>';
 							}
-					?>
 
-					<h5>Main Table</h5>
-					<?php
 						// if there are lines in the database do your work!
 						$movements_chart_values_in = '{';
 						$movements_chart_values_out = '{';
 						$total_in = 0.00;
 						$total_out = 0.00;
 						if ( count($records) ) {
-							echo '<table class="table table-striped table-bordered table-hover table-condensed">
-									<tr>
-										<td><b>DESCRIPTION</b></td>
-										<td><b>DATE</b></td>
-										<td><b>PARTNER</b></td>
-										<td><b>PAYMENT</b></td>
-										<td><b>GROUP</b></td>
-										<td><b>IN</b></td>
-										<td><b>OUT</b></td>
-										<td><b>SUBTOTAL</b></td>
-									</tr>';
 							$total_sub = 0.00;
 							foreach( $records as $r ) {
-								// Draw a table row
-								$group = R::load(__GROUP_TABLE__, $r['group_id'] );
-								$partner = R::load(__PARTNER_TABLE__, $r['partner_id'] );
-								$payment_method = R::load(__PAYMENT_METHOD_TABLE__, $r['payment_method_id'] );
-								echo '<tr>
-										<td>' . $r['description'] . '</td>
-										<td>' . datetime_to_date($r['date']) . '</td>
-										<td>' . $partner->name . '</td>
-										<td>' . $payment_method->name . '</td>
-										<td>' . $group->name . '</td>
-										<td>' . $r['in'] . '</td>
-										<td>' . $r['out'] . '</td>
-										<td>' . ($r['in'] - $r['out']) . '</td>
-									</tr>';
 								// Subtotal
 								$total_in += $r['in'];
 								$total_out += $r['out'];
@@ -150,21 +122,7 @@
 								if ( $r['in'] ) $movements_chart_values_in = $movements_chart_values_in . '"' . $r['date'] . '":' . $r['in'] . ',';
 								if ( $r['out'] ) $movements_chart_values_out = $movements_chart_values_out . '"' . $r['date'] . '":-' . $r['out'] . ',';
 								} // foreach
-							// Draw the last row with the total values
-							echo '<tr>
-								<td colspan="5"></td>
-								<td><b>' . $total_in . '</b></td>
-								<td><b>' . $total_out . '</b></td>
-								<td><b>' . $total_sub . '</b></td>
-							</tr>';
-							echo '</table>';
 							} // if
-						// else show a simple message (for now)
-						else {
-							echo '<div class="alert">
-									<strong>OPS!</strong> There isn\'t record in this database. Please create a new line <a href="' . __MAIN_PAGE__ . '">HERE</a>!
-								</div>';
-							} // else
 						$movements_chart_values_in = $movements_chart_values_in . '}';
 						$movements_chart_values_out = $movements_chart_values_out . '}';
 						$in_out_chart_values = '[' . $total_in . ',' . $total_out . ']';
